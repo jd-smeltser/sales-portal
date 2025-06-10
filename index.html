@@ -47,11 +47,215 @@
         .btn:hover {
             transform: translateY(-2px);
         }
+        .btn.secondary {
+            background: transparent;
+            border: 2px solid oklch(0.7 0.15 280);
+            color: oklch(0.7 0.15 280);
+        }
+        .btn.secondary:hover {
+            background: oklch(0.7 0.15 280);
+            color: white;
+        }
+        .upload-section {
+            margin: 2rem 0;
+        }
+        .upload-label {
+            display: block;
+            background: oklch(0.15 0.025 280);
+            border: 2px dashed oklch(0.4 0.04 280);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .upload-label:hover {
+            border-color: oklch(0.7 0.15 280);
+            background: oklch(0.18 0.03 280);
+        }
+        .upload-label span {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .upload-status {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+        .upload-status.success {
+            background: oklch(0.65 0.15 150 / 0.2);
+            color: oklch(0.65 0.15 150);
+            border: 1px solid oklch(0.65 0.15 150 / 0.3);
+        }
+        .upload-status.error {
+            background: oklch(0.65 0.15 20 / 0.2);
+            color: oklch(0.65 0.15 20);
+            border: 1px solid oklch(0.65 0.15 20 / 0.3);
+        }
+        .upload-status.processing {
+            background: oklch(0.7 0.12 80 / 0.2);
+            color: oklch(0.7 0.12 80);
+            border: 1px solid oklch(0.7 0.12 80 / 0.3);
+        }
+        .or-divider {
+            margin: 2rem 0;
+            color: oklch(0.5 0.03 280);
+            font-weight: 600;
+            position: relative;
+        }
+        .or-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: oklch(0.3 0.03 280);
+            z-index: 0;
+        }
+        .or-divider {
+            background: oklch(0.12 0.02 280);
+            padding: 0 1rem;
+            z-index: 1;
+            position: relative;
+        }
     </style>
     <script>
         // Auto-redirect if there's hash data
         if (window.location.hash.startsWith('#/gz/')) {
             window.location.href = './opportunity-template.html' + window.location.hash;
+        }
+
+        // File upload handling
+        document.addEventListener('DOMContentLoaded', () => {
+            const fileInput = document.getElementById('jsonFile');
+            const uploadStatus = document.getElementById('uploadStatus');
+            
+            fileInput.addEventListener('change', handleFileUpload);
+            
+            // Drag and drop support
+            const uploadLabel = document.querySelector('.upload-label');
+            
+            uploadLabel.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadLabel.style.borderColor = 'oklch(0.7 0.15 280)';
+                uploadLabel.style.background = 'oklch(0.18 0.03 280)';
+            });
+            
+            uploadLabel.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                uploadLabel.style.borderColor = 'oklch(0.4 0.04 280)';
+                uploadLabel.style.background = 'oklch(0.15 0.025 280)';
+            });
+            
+            uploadLabel.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadLabel.style.borderColor = 'oklch(0.4 0.04 280)';
+                uploadLabel.style.background = 'oklch(0.15 0.025 280)';
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFile(files[0]);
+                }
+            });
+        });
+
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                await handleFile(file);
+            }
+        }
+
+        async function handleFile(file) {
+            const uploadStatus = document.getElementById('uploadStatus');
+            
+            // Show processing status
+            showStatus('processing', 'Processing JSON file...');
+            
+            try {
+                // Validate file type
+                if (!file.name.endsWith('.json')) {
+                    throw new Error('Please select a JSON file');
+                }
+                
+                // Read file content
+                const text = await file.text();
+                const jsonData = JSON.parse(text);
+                
+                // Validate it has required fields (basic check)
+                if (!jsonData.company || !jsonData.company.name) {
+                    throw new Error('Invalid opportunity JSON format');
+                }
+                
+                // Compress and create URL
+                const compressedUrl = await createCompressedUrl(jsonData);
+                
+                showStatus('success', `✅ ${jsonData.company.name} opportunity loaded successfully!`);
+                
+                // Redirect to template with data after short delay
+                setTimeout(() => {
+                    window.location.href = compressedUrl;
+                }, 1500);
+                
+            } catch (error) {
+                console.error('File processing error:', error);
+                showStatus('error', `❌ Error: ${error.message}`);
+            }
+        }
+
+        async function createCompressedUrl(jsonData) {
+            try {
+                // Convert to JSON string
+                const jsonString = JSON.stringify(jsonData);
+                
+                // Compress using gzip
+                const encoder = new TextEncoder();
+                const data = encoder.encode(jsonString);
+                
+                const compressionStream = new CompressionStream('gzip');
+                const writer = compressionStream.writable.getWriter();
+                const reader = compressionStream.readable.getReader();
+                
+                // Write data and close
+                writer.write(data);
+                writer.close();
+                
+                // Read compressed chunks
+                const chunks = [];
+                let done = false;
+                while (!done) {
+                    const { value, done: readerDone } = await reader.read();
+                    done = readerDone;
+                    if (value) chunks.push(value);
+                }
+                
+                // Combine chunks and encode to base64
+                const compressedArray = new Uint8Array(chunks.reduce((acc, chunk) => [...acc, ...chunk], []));
+                const base64 = btoa(String.fromCharCode(...compressedArray));
+                
+                // Create URL
+                return `./opportunity-template.html#/gz/${base64}`;
+                
+            } catch (error) {
+                throw new Error('Failed to compress data: ' + error.message);
+            }
+        }
+
+        function showStatus(type, message) {
+            const uploadStatus = document.getElementById('uploadStatus');
+            uploadStatus.className = `upload-status ${type}`;
+            uploadStatus.textContent = message;
+            uploadStatus.style.display = 'block';
+            
+            if (type === 'error') {
+                setTimeout(() => {
+                    uploadStatus.style.display = 'none';
+                }, 5000);
+            }
         }
     </script>
 </head>
@@ -60,7 +264,18 @@
         <div class="logo">🚀</div>
         <h1>Sales Opportunity Portal</h1>
         <p>Transform unstructured sales opportunity data into beautiful, interactive microsites.</p>
-        <a href="./opportunity-template.html" class="btn">Open Template</a>
+        
+        <div class="upload-section">
+            <label for="jsonFile" class="upload-label">
+                <span>📁 Upload Opportunity JSON</span>
+                <input type="file" id="jsonFile" accept=".json" style="display: none;">
+            </label>
+            <div id="uploadStatus" class="upload-status"></div>
+        </div>
+        
+        <div class="or-divider">or</div>
+        
+        <a href="./opportunity-template.html" class="btn secondary">Browse Template</a>
     </div>
 </body>
 </html>
