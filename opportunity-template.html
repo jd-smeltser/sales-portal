@@ -1322,11 +1322,96 @@
             header.dispatchEvent(event);
         }
 
+        // URL Data Processing and Template Population
+        async function loadOpportunityData() {
+            try {
+                // Check for compressed data in URL hash
+                const hash = window.location.hash;
+                if (hash.startsWith('#/gz/')) {
+                    const compressedData = hash.substring(5); // Remove '#/gz/'
+                    
+                    // Decode base64 and decompress
+                    const binaryData = Uint8Array.from(atob(compressedData), c => c.charCodeAt(0));
+                    const decompressed = new DecompressionStream('gzip');
+                    const writer = decompressed.writable.getWriter();
+                    const reader = decompressed.readable.getReader();
+                    
+                    writer.write(binaryData);
+                    writer.close();
+                    
+                    const chunks = [];
+                    let done = false;
+                    while (!done) {
+                        const { value, done: readerDone } = await reader.read();
+                        done = readerDone;
+                        if (value) chunks.push(value);
+                    }
+                    
+                    const jsonString = new TextDecoder().decode(new Uint8Array(chunks.reduce((acc, chunk) => [...acc, ...chunk], [])));
+                    const opportunityData = JSON.parse(jsonString);
+                    
+                    // Populate template with data
+                    populateTemplate(opportunityData);
+                    return;
+                }
+                
+                // Fallback: show template placeholders
+                console.log('No opportunity data found in URL');
+                
+            } catch (error) {
+                console.error('Error loading opportunity data:', error);
+                // Show error message or fallback
+            }
+        }
+
+        function populateTemplate(data) {
+            // Simple Mustache-style template replacement
+            const template = document.documentElement.outerHTML;
+            
+            function replacePlaceholders(html, obj, prefix = '') {
+                let result = html;
+                
+                for (const [key, value] of Object.entries(obj)) {
+                    const placeholder = prefix ? `${prefix}.${key}` : key;
+                    
+                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                        result = replacePlaceholders(result, value, placeholder);
+                    } else if (Array.isArray(value)) {
+                        // Handle arrays with simple iteration
+                        const arrayPattern = new RegExp(`{{#${placeholder}}}([\\s\\S]*?){{/${placeholder}}}`, 'g');
+                        result = result.replace(arrayPattern, (match, content) => {
+                            return value.map(item => {
+                                if (typeof item === 'object') {
+                                    return replacePlaceholders(content, item);
+                                } else {
+                                    return content.replace(/{{\.}}/g, item);
+                                }
+                            }).join('');
+                        });
+                    } else {
+                        const simplePattern = new RegExp(`{{${placeholder}}}`, 'g');
+                        result = result.replace(simplePattern, value || '');
+                    }
+                }
+                
+                return result;
+            }
+            
+            const populatedHTML = replacePlaceholders(template, data);
+            document.documentElement.innerHTML = populatedHTML;
+        }
+
         // Initialize Portal
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Load opportunity data first
+            await loadOpportunityData();
+            
+            // Then initialize components
             customElements.define('opportunity-portal', OpportunityPortal);
             const portal = new OpportunityPortal();
-            document.body.appendChild(portal);
+            if (!document.body.querySelector('opportunity-portal')) {
+                document.body.appendChild(portal);
+            }
         });
 
         // Modern CSS Custom Properties Animation
