@@ -289,11 +289,13 @@
             .collapsible-content {
                 max-height: 0;
                 overflow: hidden;
-                transition: max-height 300ms var(--ease-out-expo);
+                transition: max-height 300ms var(--ease-out-expo), opacity 200ms ease;
+                opacity: 0;
             }
             
             .collapsible.expanded .collapsible-content {
-                max-height: 150vh;
+                max-height: 200vh;
+                opacity: 1;
             }
             
             .collapsible-body {
@@ -1379,8 +1381,6 @@
                 if (e.target.closest('.collapsible-header')) {
                     const header = e.target.closest('.collapsible-header');
                     const collapsible = header.parentElement;
-                    const content = collapsible.querySelector('.collapsible-content');
-                    const icon = header.querySelector('.collapsible-icon');
                     
                     // Skip interaction for always-visible sections
                     if (collapsible.classList.contains('always-visible')) return;
@@ -1391,32 +1391,11 @@
                         header.style.transform = '';
                     }, 100);
                     
+                    // Simple toggle using CSS classes only
+                    collapsible.classList.toggle('expanded');
+                    
+                    // Subtle visual feedback for successful action
                     if (collapsible.classList.contains('expanded')) {
-                        // Collapse with gentle animation - calm technology
-                        const animation = content.animate([
-                            { 
-                                maxHeight: content.scrollHeight + 'px', 
-                                opacity: 1,
-                                transform: 'translateY(0)'
-                            },
-                            { 
-                                maxHeight: '0px', 
-                                opacity: 0,
-                                transform: 'translateY(-10px)'
-                            }
-                        ], {
-                            duration: 250,
-                            easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
-                        });
-                        
-                        animation.onfinish = () => {
-                            collapsible.classList.remove('expanded');
-                        };
-                    } else {
-                        // Expand with purposeful animation
-                        collapsible.classList.add('expanded');
-                        
-                        // Subtle visual feedback for successful action
                         const ripple = document.createElement('div');
                         ripple.style.cssText = `
                             position: absolute;
@@ -1434,22 +1413,6 @@
                         header.style.position = 'relative';
                         header.appendChild(ripple);
                         setTimeout(() => ripple.remove(), 300);
-                        
-                        content.animate([
-                            { 
-                                maxHeight: '0px', 
-                                opacity: 0,
-                                transform: 'translateY(-10px)'
-                            },
-                            { 
-                                maxHeight: content.scrollHeight + 'px', 
-                                opacity: 1,
-                                transform: 'translateY(0)'
-                            }
-                        ], {
-                            duration: 300,
-                            easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
-                        });
                     }
                 }
                 
@@ -1523,6 +1486,8 @@
         }
 
         // URL Data Processing and Template Population
+        let isTemplatePopulated = false;
+        
         async function loadOpportunityData() {
             try {
                 // Check for compressed data in URL hash
@@ -1550,8 +1515,11 @@
                     const jsonString = new TextDecoder().decode(new Uint8Array(chunks.reduce((acc, chunk) => [...acc, ...chunk], [])));
                     const opportunityData = JSON.parse(jsonString);
                     
-                    // Populate template with data
-                    populateTemplate(opportunityData);
+                    // Populate template with data only once
+                    if (!isTemplatePopulated) {
+                        populateTemplate(opportunityData);
+                        isTemplatePopulated = true;
+                    }
                     return;
                 }
                 
@@ -1565,7 +1533,17 @@
         }
 
         function populateTemplate(data) {
-            // Safe template renderer that updates only content, not scripts
+            // Safe template renderer that preserves UI state
+            
+            // Capture current UI state before updating
+            const expandedSections = [];
+            document.querySelectorAll('.collapsible.expanded').forEach(section => {
+                const header = section.querySelector('.collapsible-header');
+                const title = header?.querySelector('.collapsible-title')?.textContent?.trim();
+                if (title) {
+                    expandedSections.push(title);
+                }
+            });
             
             function renderTemplate(template, context) {
                 // Handle array iterations {{#array}}...{{/array}}
@@ -1639,12 +1617,25 @@
             // Update the body content safely
             document.body.innerHTML = processedContent;
             
-            // Re-initialize event listeners after content update
+            // Restore UI state after content update
             setTimeout(() => {
+                // Restore expanded sections
+                expandedSections.forEach(titleText => {
+                    const headers = document.querySelectorAll('.collapsible-header');
+                    headers.forEach(header => {
+                        const title = header.querySelector('.collapsible-title')?.textContent?.trim();
+                        if (title && title.includes(titleText.split(' ')[0])) { // Match first word to handle emoji prefixes
+                            const collapsible = header.parentElement;
+                            collapsible.classList.add('expanded');
+                        }
+                    });
+                });
+                
+                // Re-initialize event listeners
                 if (window.portal) {
                     window.portal.bindEvents();
                 }
-            }, 100);
+            }, 50);
         }
 
         // Performance-First Initialization
