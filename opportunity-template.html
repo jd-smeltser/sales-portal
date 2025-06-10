@@ -5,878 +5,571 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{company.name}} | Make.com Sales Opportunity</title>
     <meta name="description" content="{{company.description}}">
+    <meta name="view-transition" content="same-origin">
+    <meta name="color-scheme" content="light dark">
     <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;text y='0.9em' font-size='90'&gt;🚀&lt;/text&gt;&lt;/svg&gt;">
     
     <style>
-        :root {
-            --primary: #8B5CF6;
-            --primary-light: #A78BFA;
-            --primary-dark: #7C3AED;
-            --success: #10B981;
-            --warning: #F59E0B;
-            --error: #EF4444;
-            --info: #3B82F6;
-            --text-primary: #1F2937;
-            --text-secondary: #6B7280;
-            --text-tertiary: #9CA3AF;
-            --bg-primary: #FFFFFF;
-            --bg-secondary: #F9FAFB;
-            --bg-tertiary: #F3F4F6;
-            --border: #E5E7EB;
-            --border-light: #F3F4F6;
-            --radius: 12px;
-            --radius-sm: 8px;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-fast: all 0.15s ease;
+        /* CSS Layers for Perfect Cascade Control */
+        @layer reset, design-tokens, components, layouts, utilities, overrides;
+        
+        @layer reset {
+            *, *::before, *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+            
+            html {
+                scroll-behavior: smooth;
+                scroll-padding-top: 100px;
+                font-synthesis: none;
+                text-rendering: optimizeLegibility;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+            
+            body {
+                margin: 0;
+                overflow-x: hidden;
+                font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                font-feature-settings: 'liga' 1, 'kern' 1;
+                line-height: 1.6;
+            }
         }
-
-        @media (prefers-color-scheme: dark) {
+        
+        @layer design-tokens {
             :root {
-                --primary: #A78BFA;
-                --primary-light: #C4B5FD;
-                --primary-dark: #8B5CF6;
-                --text-primary: #F9FAFB;
-                --text-secondary: #D1D5DB;
-                --text-tertiary: #9CA3AF;
-                --bg-primary: #111827;
-                --bg-secondary: #1F2937;
-                --bg-tertiary: #374151;
-                --border: #374151;
-                --border-light: #4B5563;
-                --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
-                --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-                --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+                /* Color System with Modern CSS Color Functions */
+                --primary-hsl: 253 91% 68%;
+                --primary: oklch(0.7 0.15 280);
+                --primary-variant: color-mix(in oklch, var(--primary), white 20%);
+                --on-primary: oklch(1 0 0);
+                
+                --secondary-hsl: 142 71% 45%;
+                --secondary: oklch(0.65 0.15 150);
+                --on-secondary: oklch(1 0 0);
+                
+                --surface: oklch(0.98 0.005 280);
+                --surface-variant: oklch(0.95 0.01 280);
+                --surface-container: oklch(0.92 0.015 280);
+                --on-surface: oklch(0.2 0.02 280);
+                --on-surface-variant: oklch(0.45 0.03 280);
+                
+                --outline: oklch(0.7 0.04 280);
+                --outline-variant: oklch(0.85 0.02 280);
+                
+                --warning: oklch(0.7 0.12 80);
+                --error: oklch(0.65 0.15 20);
+                --success: oklch(0.65 0.15 150);
+                
+                /* Dark Mode Colors */
+                --dark-surface: oklch(0.12 0.02 280);
+                --dark-surface-variant: oklch(0.18 0.03 280);
+                --dark-on-surface: oklch(0.9 0.01 280);
+                
+                /* Spacing System */
+                --space-xs: 0.25rem;
+                --space-sm: 0.5rem;
+                --space-md: 1rem;
+                --space-lg: 1.5rem;
+                --space-xl: 2rem;
+                --space-2xl: 3rem;
+                --space-3xl: 4rem;
+                
+                /* Typography Scale */
+                --text-xs: clamp(0.75rem, 0.7rem + 0.2vw, 0.8rem);
+                --text-sm: clamp(0.875rem, 0.8rem + 0.3vw, 0.95rem);
+                --text-md: clamp(1rem, 0.95rem + 0.25vw, 1.1rem);
+                --text-lg: clamp(1.125rem, 1rem + 0.5vw, 1.25rem);
+                --text-xl: clamp(1.25rem, 1.1rem + 0.7vw, 1.5rem);
+                --text-2xl: clamp(1.5rem, 1.3rem + 1vw, 2rem);
+                --text-3xl: clamp(1.875rem, 1.5rem + 1.5vw, 2.5rem);
+                --text-4xl: clamp(2.25rem, 1.8rem + 2vw, 3.5rem);
+                
+                /* Radius System */
+                --radius-sm: 0.375rem;
+                --radius-md: 0.5rem;
+                --radius-lg: 0.75rem;
+                --radius-xl: 1rem;
+                --radius-2xl: 1.5rem;
+                
+                /* Shadows with Light/Dark Variants */
+                --shadow-sm: 0 1px 2px 0 color-mix(in srgb, var(--on-surface) 5%, transparent);
+                --shadow-md: 0 4px 6px -1px color-mix(in srgb, var(--on-surface) 7%, transparent);
+                --shadow-lg: 0 10px 15px -3px color-mix(in srgb, var(--on-surface) 10%, transparent);
+                --shadow-xl: 0 20px 25px -5px color-mix(in srgb, var(--on-surface) 15%, transparent);
+                
+                /* Animations */
+                --ease-in-out-quart: cubic-bezier(0.77, 0, 0.175, 1);
+                --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+                --ease-spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                
+                /* Grid */
+                --grid-max-width: 80rem;
+                --grid-gutter: var(--space-md);
+            }
+            
+            @media (prefers-color-scheme: dark) {
+                :root {
+                    --surface: var(--dark-surface);
+                    --surface-variant: var(--dark-surface-variant);
+                    --on-surface: var(--dark-on-surface);
+                    --surface-container: oklch(0.15 0.025 280);
+                    --outline: oklch(0.4 0.04 280);
+                    --outline-variant: oklch(0.25 0.03 280);
+                }
             }
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', system-ui, sans-serif;
-            line-height: 1.6;
-            color: var(--text-primary);
-            background: var(--bg-primary);
-            font-size: 15px;
-            overflow-x: hidden;
-        }
-
-        /* Layout */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
-        /* Navigation */
-        .nav {
-            position: sticky;
-            top: 0;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border-light);
-            z-index: 100;
-            padding: 16px 0;
-        }
-
-        @media (prefers-color-scheme: dark) {
-            .nav {
-                background: rgba(17, 24, 39, 0.95);
+        
+        @layer components {
+            /* Modern Button Component */
+            .btn {
+                --_btn-bg: var(--primary);
+                --_btn-color: var(--on-primary);
+                --_btn-hover-bg: color-mix(in oklch, var(--primary), white 15%);
+                
+                display: inline-flex;
+                align-items: center;
+                gap: var(--space-sm);
+                padding: var(--space-sm) var(--space-lg);
+                border: none;
+                border-radius: var(--radius-md);
+                background: var(--_btn-bg);
+                color: var(--_btn-color);
+                font-size: var(--text-sm);
+                font-weight: 600;
+                text-decoration: none;
+                cursor: pointer;
+                transition: all 300ms var(--ease-out-expo);
+                transform-origin: center;
+                user-select: none;
+                
+                &:hover {
+                    background: var(--_btn-hover-bg);
+                    transform: translateY(-2px) scale(1.02);
+                    box-shadow: var(--shadow-lg);
+                }
+                
+                &:active {
+                    transform: translateY(0) scale(0.98);
+                    transition-duration: 100ms;
+                }
+                
+                &.secondary {
+                    --_btn-bg: var(--surface-variant);
+                    --_btn-color: var(--on-surface);
+                    --_btn-hover-bg: var(--surface-container);
+                }
+            }
+            
+            /* Status Badges with Modern Design */
+            .status-badge {
+                --_badge-bg: var(--warning);
+                
+                display: inline-flex;
+                align-items: center;
+                gap: var(--space-xs);
+                padding: var(--space-xs) var(--space-sm);
+                border-radius: var(--radius-2xl);
+                background: var(--_badge-bg);
+                color: var(--on-primary);
+                font-size: var(--text-xs);
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                
+                &[data-status="completed"] { --_badge-bg: var(--success); }
+                &[data-status="demo"] { --_badge-bg: var(--primary); }
+                &[data-status="stalled"] { --_badge-bg: var(--warning); }
+                &[data-status="won"] { --_badge-bg: var(--success); }
+                &[data-status="lost"] { --_badge-bg: var(--error); }
+            }
+            
+            /* Health Indicator */
+            .health-dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: currentColor;
+                
+                &[data-health="green"] { color: var(--success); }
+                &[data-health="yellow"] { color: var(--warning); }
+                &[data-health="red"] { color: var(--error); }
+            }
+            
+            /* Modern Card Component */
+            .card {
+                background: var(--surface-variant);
+                border: 1px solid var(--outline-variant);
+                border-radius: var(--radius-lg);
+                padding: var(--space-lg);
+                transition: all 300ms var(--ease-out-expo);
+                
+                &:hover {
+                    transform: translateY(-4px);
+                    box-shadow: var(--shadow-xl);
+                    border-color: color-mix(in oklch, var(--primary), transparent 70%);
+                }
+            }
+            
+            /* Collapsible Sections with Smooth Animations */
+            .collapsible {
+                border: 1px solid var(--outline-variant);
+                border-radius: var(--radius-lg);
+                margin-bottom: var(--space-lg);
+                overflow: hidden;
+                transition: all 300ms var(--ease-out-expo);
+                
+                &:hover {
+                    box-shadow: var(--shadow-md);
+                }
+            }
+            
+            .collapsible-header {
+                background: var(--surface-variant);
+                padding: var(--space-lg);
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                user-select: none;
+                transition: background 200ms ease;
+                
+                &:hover {
+                    background: var(--surface-container);
+                }
+            }
+            
+            .collapsible-title {
+                font-size: var(--text-lg);
+                font-weight: 700;
+                color: var(--on-surface);
+            }
+            
+            .collapsible-icon {
+                font-size: var(--text-xl);
+                color: var(--on-surface-variant);
+                transition: transform 300ms var(--ease-spring);
+            }
+            
+            .collapsible.expanded .collapsible-icon {
+                transform: rotate(180deg);
+            }
+            
+            .collapsible-content {
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 500ms var(--ease-out-expo);
+            }
+            
+            .collapsible.expanded .collapsible-content {
+                max-height: 100vh;
+            }
+            
+            .collapsible-body {
+                padding: var(--space-lg);
+                background: var(--surface);
             }
         }
-
-        .nav-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-brand {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 24px;
-            list-style: none;
-        }
-
-        .nav-link {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition-fast);
-            position: relative;
-        }
-
-        .nav-link:hover {
-            color: var(--primary);
-        }
-
-        .nav-link.active {
-            color: var(--primary);
-        }
-
-        .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: -20px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: var(--primary);
-            border-radius: 1px;
-        }
-
-        /* Header */
-        .hero {
-            padding: 48px 0;
-            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .hero-content {
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .company-name {
-            font-size: 42px;
-            font-weight: 800;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-            letter-spacing: -0.02em;
-        }
-
-        .company-meta {
-            font-size: 18px;
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-        }
-
-        .company-description {
-            font-size: 16px;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto 32px;
-        }
-
-        /* Status Dashboard */
-        .status-dashboard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin: 48px 0;
-        }
-
-        .status-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 24px;
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .status-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--primary);
-        }
-
-        .status-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .status-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-tertiary);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 8px;
-        }
-
-        .status-value {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
-
-        .status-meta {
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-
-        .stage-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--warning);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .stage-demo { background: var(--primary); }
-        .stage-technical { background: var(--info); }
-        .stage-stalled { background: var(--warning); }
-        .stage-won { background: var(--success); }
-        .stage-lost { background: var(--error); }
-
-        .health-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-
-        .health-green { background: var(--success); }
-        .health-yellow { background: var(--warning); }
-        .health-red { background: var(--error); }
-
-        /* Sections */
-        .section {
-            margin: 64px 0;
-        }
-
-        .section-header {
-            margin-bottom: 32px;
-        }
-
-        .section-title {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-            letter-spacing: -0.01em;
-        }
-
-        .section-subtitle {
-            font-size: 16px;
-            color: var(--text-secondary);
-        }
-
-        /* Collapsible Sections */
-        .collapsible {
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            margin-bottom: 16px;
-            overflow: hidden;
-            transition: var(--transition);
-        }
-
-        .collapsible:hover {
-            box-shadow: var(--shadow);
-        }
-
-        .collapsible-header {
-            background: var(--bg-secondary);
-            padding: 20px 24px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            user-select: none;
-            transition: var(--transition-fast);
-        }
-
-        .collapsible-header:hover {
-            background: var(--bg-tertiary);
-        }
-
-        .collapsible-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .collapsible-icon {
-            font-size: 20px;
-            color: var(--text-secondary);
-            transition: var(--transition-fast);
-        }
-
-        .collapsible.expanded .collapsible-icon {
-            transform: rotate(180deg);
-        }
-
-        .collapsible-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-
-        .collapsible.expanded .collapsible-content {
-            max-height: 2000px;
-        }
-
-        .collapsible-body {
-            padding: 24px;
-            background: var(--bg-primary);
-        }
-
-        /* Cards and Grids */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-        }
-
-        .card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 24px;
-            transition: var(--transition);
-        }
-
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .card-header {
-            margin-bottom: 16px;
-        }
-
-        .card-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
-
-        .card-subtitle {
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-
-        .card-content {
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        /* Contact Cards */
-        .contact-card {
-            position: relative;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px;
-            transition: var(--transition);
-        }
-
-        .contact-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .contact-name {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
-
-        .contact-role {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 12px;
-        }
-
-        .contact-info {
-            font-size: 14px;
-        }
-
-        .contact-email {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .contact-email:hover {
-            text-decoration: underline;
-        }
-
-        .contact-phone {
-            color: var(--text-secondary);
-            margin-left: 8px;
-        }
-
-        .contact-notes {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px solid var(--border-light);
-            font-style: italic;
-        }
-
-        /* Technical Architecture */
-        .architecture-diagram {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 24px;
-            margin: 24px 0;
-            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
-            font-size: 13px;
-            overflow-x: auto;
-        }
-
-        .systems-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 16px;
-            margin: 24px 0;
-        }
-
-        .system-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            padding: 16px;
-            transition: var(--transition-fast);
-        }
-
-        .system-card:hover {
-            box-shadow: var(--shadow);
-        }
-
-        .system-name {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
-
-        .system-type {
-            font-size: 12px;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 8px;
-        }
-
-        .system-details {
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-
-        /* Badges and Pills */
-        .complexity-badge {
-            padding: 6px 12px;
-            border-radius: 16px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .complexity-low { background: rgba(16, 185, 129, 0.1); color: #059669; }
-        .complexity-medium { background: rgba(245, 158, 11, 0.1); color: #D97706; }
-        .complexity-high { background: rgba(239, 68, 68, 0.1); color: #DC2626; }
-
-        /* Lists */
-        .feature-list {
-            list-style: none;
-            margin: 16px 0;
-        }
-
-        .feature-list li {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border-light);
-        }
-
-        .feature-list li:last-child {
-            border-bottom: none;
-        }
-
-        .feature-icon {
-            color: var(--primary);
-            font-size: 16px;
-            margin-top: 2px;
-        }
-
-        .challenge-list {
-            list-style: none;
-            margin: 16px 0;
-        }
-
-        .challenge-item {
-            background: rgba(239, 68, 68, 0.05);
-            border-left: 3px solid var(--error);
-            padding: 16px;
-            margin-bottom: 12px;
-            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        /* Timeline */
-        .timeline {
-            position: relative;
-            margin: 24px 0;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 20px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: var(--border);
-        }
-
-        .timeline-item {
-            position: relative;
-            padding: 16px 0 16px 60px;
-            margin-bottom: 16px;
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: 14px;
-            top: 20px;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--primary);
-            border: 2px solid var(--bg-primary);
-        }
-
-        .timeline-date {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-tertiary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 4px;
-        }
-
-        .timeline-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
-
-        .timeline-details {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-        }
-
-        .timeline-status {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .status-completed { background: rgba(16, 185, 129, 0.1); color: #059669; }
-        .status-upcoming { background: rgba(59, 130, 246, 0.1); color: #2563EB; }
-        .status-overdue { background: rgba(239, 68, 68, 0.1); color: #DC2626; }
-
-        /* Risk Assessment */
-        .risk-grid {
-            display: grid;
-            gap: 16px;
-            margin: 24px 0;
-        }
-
-        .risk-item {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px;
-            transition: var(--transition-fast);
-        }
-
-        .risk-item:hover {
-            box-shadow: var(--shadow);
-        }
-
-        .risk-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
-        }
-
-        .risk-description {
-            font-size: 15px;
-            font-weight: 500;
-            color: var(--text-primary);
-            flex: 1;
-            margin-right: 16px;
-        }
-
-        .risk-impact {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .impact-low { background: rgba(16, 185, 129, 0.1); color: #059669; }
-        .impact-medium { background: rgba(245, 158, 11, 0.1); color: #D97706; }
-        .impact-high { background: rgba(239, 68, 68, 0.1); color: #DC2626; }
-
-        .risk-mitigation {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
-
-        /* Pricing */
-        .pricing-card {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            border-radius: var(--radius);
-            padding: 32px;
-            text-align: center;
-            margin: 24px 0;
-        }
-
-        .pricing-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .pricing-subtitle {
-            opacity: 0.9;
-            margin-bottom: 24px;
-        }
-
-        .pricing-amount {
-            font-size: 48px;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-
-        .pricing-period {
-            opacity: 0.8;
-            margin-bottom: 24px;
-        }
-
-        .pricing-features {
-            list-style: none;
-            text-align: left;
-        }
-
-        .pricing-features li {
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* Call Notes */
-        .note-item {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px;
-            margin-bottom: 16px;
-        }
-
-        .note-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .note-meta {
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-
-        .note-type {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            background: var(--bg-tertiary);
-            color: var(--text-secondary);
-        }
-
-        .note-content {
-            font-size: 14px;
-            line-height: 1.6;
-            color: var(--text-primary);
-        }
-
-        .recording-link {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 13px;
-        }
-
-        .recording-link:hover {
-            text-decoration: underline;
-        }
-
-        /* Action Items */
-        .action-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-            margin: 32px 0;
-        }
-
-        .action-card {
-            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 24px;
-        }
-
-        .action-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 16px;
-        }
-
-        .action-list {
-            list-style: none;
-        }
-
-        .action-list li {
-            padding: 8px 0;
-            font-size: 14px;
-            color: var(--text-secondary);
-            border-bottom: 1px solid var(--border-light);
-        }
-
-        .action-list li:last-child {
-            border-bottom: none;
-        }
-
-        /* Footer */
-        .footer {
-            margin-top: 80px;
-            padding: 32px 0;
-            border-top: 1px solid var(--border);
-            text-align: center;
-            color: var(--text-tertiary);
-            font-size: 14px;
-        }
-
-        .footer-brand {
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
+        
+        @layer layouts {
+            body {
+                background: var(--surface);
+                color: var(--on-surface);
+                font-size: var(--text-md);
+            }
+            
+            /* Container with CSS Grid */
             .container {
-                padding: 0 16px;
+                max-width: var(--grid-max-width);
+                margin: 0 auto;
+                padding: 0 var(--grid-gutter);
+                
+                @container (max-width: 768px) {
+                    padding: 0 var(--space-md);
+                }
             }
             
-            .company-name {
-                font-size: 32px;
+            /* Modern Navigation */
+            .nav {
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+                backdrop-filter: blur(20px) saturate(180%);
+                background: color-mix(in srgb, var(--surface) 80%, transparent);
+                border-bottom: 1px solid var(--outline-variant);
+                padding: var(--space-md) 0;
             }
             
-            .section-title {
-                font-size: 24px;
+            .nav-content {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            .nav-brand {
+                font-size: var(--text-lg);
+                font-weight: 800;
+                color: var(--primary);
+                text-decoration: none;
             }
             
             .nav-links {
-                display: none;
+                display: flex;
+                gap: var(--space-lg);
+                list-style: none;
+                
+                @container (max-width: 768px) {
+                    display: none;
+                }
             }
             
+            .nav-link {
+                color: var(--on-surface-variant);
+                text-decoration: none;
+                font-weight: 600;
+                position: relative;
+                transition: color 200ms ease;
+                
+                &:hover, &.active {
+                    color: var(--primary);
+                }
+                
+                &.active::after {
+                    content: '';
+                    position: absolute;
+                    bottom: -24px;
+                    left: 0;
+                    right: 0;
+                    height: 2px;
+                    background: var(--primary);
+                    border-radius: 1px;
+                }
+            }
+            
+            /* Hero Section with Gradient */
+            .hero {
+                padding: var(--space-3xl) 0;
+                background: linear-gradient(135deg, 
+                    var(--surface-variant) 0%, 
+                    color-mix(in oklch, var(--primary), transparent 92%) 100%);
+                border-bottom: 1px solid var(--outline-variant);
+                text-align: center;
+            }
+            
+            .company-name {
+                font-size: var(--text-4xl);
+                font-weight: 900;
+                background: linear-gradient(135deg, var(--primary), var(--secondary));
+                background-clip: text;
+                -webkit-background-clip: text;
+                color: transparent;
+                margin-bottom: var(--space-sm);
+                letter-spacing: -0.02em;
+            }
+            
+            .company-meta {
+                font-size: var(--text-lg);
+                color: var(--on-surface-variant);
+                margin-bottom: var(--space-md);
+            }
+            
+            .company-description {
+                font-size: var(--text-md);
+                color: var(--on-surface-variant);
+                max-width: 60ch;
+                margin: 0 auto;
+            }
+            
+            /* Status Dashboard with CSS Grid */
+            .status-dashboard {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: var(--space-lg);
+                margin: var(--space-3xl) 0;
+            }
+            
+            .status-card {
+                background: var(--surface-variant);
+                border: 1px solid var(--outline-variant);
+                border-radius: var(--radius-lg);
+                padding: var(--space-lg);
+                position: relative;
+                overflow: hidden;
+                transition: all 300ms var(--ease-out-expo);
+                
+                &::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 3px;
+                    background: linear-gradient(90deg, var(--primary), var(--secondary));
+                }
+                
+                &:hover {
+                    transform: translateY(-4px);
+                    box-shadow: var(--shadow-xl);
+                }
+            }
+            
+            .status-label {
+                font-size: var(--text-xs);
+                font-weight: 700;
+                color: var(--on-surface-variant);
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                margin-bottom: var(--space-sm);
+            }
+            
+            .status-value {
+                font-size: var(--text-xl);
+                font-weight: 800;
+                color: var(--on-surface);
+                margin-bottom: var(--space-xs);
+            }
+            
+            .status-meta {
+                font-size: var(--text-sm);
+                color: var(--on-surface-variant);
+            }
+            
+            /* Section Layouts */
+            .section {
+                margin: var(--space-3xl) 0;
+            }
+            
+            .section-header {
+                text-align: center;
+                margin-bottom: var(--space-2xl);
+            }
+            
+            .section-title {
+                font-size: var(--text-3xl);
+                font-weight: 800;
+                color: var(--on-surface);
+                margin-bottom: var(--space-sm);
+                letter-spacing: -0.01em;
+            }
+            
+            .section-subtitle {
+                font-size: var(--text-md);
+                color: var(--on-surface-variant);
+            }
+            
+            /* Grid Layouts */
+            .card-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: var(--space-lg);
+            }
+            
+            .contact-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: var(--space-lg);
+            }
+            
+            .systems-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: var(--space-md);
+            }
+        }
+        
+        @layer utilities {
+            .text-center { text-align: center; }
+            .font-bold { font-weight: 700; }
+            .hidden { display: none !important; }
+            
+            /* View Transition Names */
+            .company-name { view-transition-name: company-name; }
+            .status-dashboard { view-transition-name: status-dashboard; }
+            .nav { view-transition-name: navigation; }
+        }
+        
+        /* CSS Container Queries */
+        @container (max-width: 768px) {
             .status-dashboard,
             .card-grid,
+            .contact-grid,
             .systems-grid {
                 grid-template-columns: 1fr;
             }
             
             .collapsible-header {
-                padding: 16px 20px;
+                padding: var(--space-md);
             }
             
             .collapsible-body {
-                padding: 20px;
+                padding: var(--space-md);
             }
         }
-
-        /* Animations */
-        @keyframes fadeInUp {
+        
+        /* Advanced Animations */
+        @keyframes slideInUp {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(30px);
             }
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-
-        .animate-in {
-            animation: fadeInUp 0.6s ease-out;
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-
+        
+        .animate-in {
+            animation: slideInUp 600ms var(--ease-out-expo) both;
+        }
+        
+        .fade-in {
+            animation: fadeIn 400ms ease both;
+        }
+        
+        /* Intersection Observer Animations */
+        .intersection-animate {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 600ms var(--ease-out-expo);
+        }
+        
+        .intersection-animate.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
         /* Print Styles */
         @media print {
-            .nav,
-            .collapsible-icon {
-                display: none;
-            }
-            
-            .collapsible-content {
-                max-height: none !important;
-            }
-            
-            .section {
-                break-inside: avoid;
+            .nav, .collapsible-icon { display: none; }
+            .collapsible-content { max-height: none !important; }
+            .section { break-inside: avoid; }
+            * { color-adjust: exact; }
+        }
+        
+        /* Reduced Motion Support */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Navigation with Backdrop Filter -->
     <nav class="nav">
         <div class="container">
             <div class="nav-content">
-                <div class="nav-brand">{{company.name}} Opportunity</div>
+                <a href="#" class="nav-brand">{{company.name}} Opportunity</a>
                 <ul class="nav-links">
                     <li><a href="#overview" class="nav-link">Overview</a></li>
                     <li><a href="#contacts" class="nav-link">Contacts</a></li>
@@ -888,9 +581,10 @@
         </div>
     </nav>
 
+    <!-- Hero Section -->
     <header class="hero">
         <div class="container">
-            <div class="hero-content animate-in">
+            <div class="animate-in">
                 <h1 class="company-name">{{company.name}}</h1>
                 <div class="company-meta">{{company.location}} • {{company.industry}}</div>
                 {{#company.description}}
@@ -902,12 +596,12 @@
 
     <main class="container">
         <!-- Status Dashboard -->
-        <section class="status-dashboard animate-in">
+        <section class="status-dashboard intersection-animate">
             <div class="status-card">
                 <div class="status-label">Current Stage</div>
                 <div class="status-value">
-                    <span class="stage-badge stage-{{status.stage}}">
-                        <span class="health-dot health-{{status.health}}"></span>
+                    <span class="status-badge" data-status="{{status.stage}}">
+                        <span class="health-dot" data-health="{{status.health}}"></span>
                         {{status.stage}}
                     </span>
                 </div>
@@ -936,7 +630,7 @@
         </section>
 
         <!-- Overview Section -->
-        <section id="overview" class="section">
+        <section id="overview" class="section intersection-animate">
             <div class="section-header">
                 <h2 class="section-title">Business Overview</h2>
                 <p class="section-subtitle">Understanding the opportunity and business drivers</p>
@@ -949,26 +643,26 @@
                 </div>
                 <div class="collapsible-content">
                     <div class="collapsible-body">
-                        <div style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; padding: 24px; border-radius: var(--radius); margin-bottom: 24px;">
-                            <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 12px;">{{overview.useCase}}</h4>
+                        <div style="background: linear-gradient(135deg, var(--primary), color-mix(in oklch, var(--primary), var(--secondary) 30%)); color: var(--on-primary); padding: var(--space-lg); border-radius: var(--radius-lg); margin-bottom: var(--space-lg);">
+                            <h4 style="font-size: var(--text-lg); font-weight: 700; margin-bottom: var(--space-sm);">{{overview.useCase}}</h4>
                             <p style="opacity: 0.9;">{{overview.solution}}</p>
                         </div>
                         
                         {{#overview.businessDrivers}}
-                        <h4 style="margin-bottom: 16px; color: var(--text-primary);">Business Drivers</h4>
-                        <ul class="feature-list">
+                        <h4 style="margin-bottom: var(--space-md); color: var(--on-surface); font-weight: 700;">Business Drivers</h4>
+                        <div style="display: grid; gap: var(--space-sm);">
                             {{#overview.businessDrivers}}
-                            <li>
-                                <span class="feature-icon">✓</span>
+                            <div style="display: flex; align-items: center; gap: var(--space-sm); padding: var(--space-sm); background: var(--surface-variant); border-radius: var(--radius-md);">
+                                <span style="color: var(--success); font-size: var(--text-lg);">✓</span>
                                 <span>{{.}}</span>
-                            </li>
+                            </div>
                             {{/overview.businessDrivers}}
-                        </ul>
+                        </div>
                         {{/overview.businessDrivers}}
 
-                        <div style="margin-top: 24px; padding: 20px; background: var(--bg-secondary); border-radius: var(--radius-sm);">
-                            <h4 style="margin-bottom: 8px; color: var(--text-primary);">Current Pain Points</h4>
-                            <p style="color: var(--text-secondary);">{{overview.pain}}</p>
+                        <div style="margin-top: var(--space-lg); padding: var(--space-lg); background: var(--surface-variant); border-radius: var(--radius-md);">
+                            <h4 style="margin-bottom: var(--space-sm); color: var(--on-surface); font-weight: 700;">Current Pain Points</h4>
+                            <p style="color: var(--on-surface-variant);">{{overview.pain}}</p>
                         </div>
                     </div>
                 </div>
@@ -976,7 +670,7 @@
         </section>
 
         <!-- Contacts Section -->
-        <section id="contacts" class="section">
+        <section id="contacts" class="section intersection-animate">
             <div class="section-header">
                 <h2 class="section-title">Key Stakeholders</h2>
                 <p class="section-subtitle">Decision makers and technical contacts</p>
@@ -989,37 +683,45 @@
                 </div>
                 <div class="collapsible-content">
                     <div class="collapsible-body">
-                        <div class="card-grid">
+                        <div class="contact-grid">
                             <!-- Primary Contact -->
-                            <div class="contact-card" style="border-left: 4px solid var(--primary);">
-                                <div class="contact-name">{{contacts.primary.name}} ⭐</div>
-                                <div class="contact-role">{{contacts.primary.role}}</div>
-                                <div class="contact-info">
-                                    <a href="mailto:{{contacts.primary.email}}" class="contact-email">{{contacts.primary.email}}</a>
+                            <div class="card" style="border-left: 4px solid var(--primary);">
+                                <div style="font-size: var(--text-lg); font-weight: 700; color: var(--on-surface); margin-bottom: var(--space-xs);">
+                                    {{contacts.primary.name}} ⭐
+                                </div>
+                                <div style="font-size: var(--text-sm); color: var(--on-surface-variant); margin-bottom: var(--space-sm);">
+                                    {{contacts.primary.role}}
+                                </div>
+                                <div style="font-size: var(--text-sm);">
+                                    <a href="mailto:{{contacts.primary.email}}" style="color: var(--primary); text-decoration: none; font-weight: 600;">{{contacts.primary.email}}</a>
                                     {{#contacts.primary.phone}}
-                                    <span class="contact-phone">{{contacts.primary.phone}}</span>
+                                    <br><span style="color: var(--on-surface-variant);">{{contacts.primary.phone}}</span>
                                     {{/contacts.primary.phone}}
                                 </div>
                                 {{#contacts.primary.notes}}
-                                <div class="contact-notes">{{contacts.primary.notes}}</div>
+                                <div style="font-size: var(--text-xs); color: var(--on-surface-variant); margin-top: var(--space-sm); padding-top: var(--space-sm); border-top: 1px solid var(--outline-variant); font-style: italic;">
+                                    {{contacts.primary.notes}}
+                                </div>
                                 {{/contacts.primary.notes}}
                             </div>
 
                             <!-- Technical Contacts -->
                             {{#contacts.technical}}
-                            <div class="contact-card">
-                                <div class="contact-name">{{name}}</div>
-                                <div class="contact-role">{{role}}</div>
-                                <div class="contact-info">
+                            <div class="card">
+                                <div style="font-size: var(--text-lg); font-weight: 700; color: var(--on-surface); margin-bottom: var(--space-xs);">{{name}}</div>
+                                <div style="font-size: var(--text-sm); color: var(--on-surface-variant); margin-bottom: var(--space-sm);">{{role}}</div>
+                                <div style="font-size: var(--text-sm);">
                                     {{#email}}
-                                    <a href="mailto:{{email}}" class="contact-email">{{email}}</a>
+                                    <a href="mailto:{{email}}" style="color: var(--primary); text-decoration: none; font-weight: 600;">{{email}}</a>
                                     {{/email}}
                                     {{#phone}}
-                                    <span class="contact-phone">{{phone}}</span>
+                                    <br><span style="color: var(--on-surface-variant);">{{phone}}</span>
                                     {{/phone}}
                                 </div>
                                 {{#notes}}
-                                <div class="contact-notes">{{notes}}</div>
+                                <div style="font-size: var(--text-xs); color: var(--on-surface-variant); margin-top: var(--space-sm); padding-top: var(--space-sm); border-top: 1px solid var(--outline-variant); font-style: italic;">
+                                    {{notes}}
+                                </div>
                                 {{/notes}}
                             </div>
                             {{/contacts.technical}}
@@ -1036,16 +738,18 @@
                 </div>
                 <div class="collapsible-content">
                     <div class="collapsible-body">
-                        <div class="card-grid">
+                        <div class="contact-grid">
                             {{#contacts.makeTeam}}
-                            <div class="contact-card">
-                                <div class="contact-name">{{name}}</div>
-                                <div class="contact-role">{{role}}</div>
-                                <div class="contact-info">
-                                    <a href="mailto:{{email}}" class="contact-email">{{email}}</a>
+                            <div class="card">
+                                <div style="font-size: var(--text-lg); font-weight: 700; color: var(--on-surface); margin-bottom: var(--space-xs);">{{name}}</div>
+                                <div style="font-size: var(--text-sm); color: var(--on-surface-variant); margin-bottom: var(--space-sm);">{{role}}</div>
+                                <div style="font-size: var(--text-sm);">
+                                    <a href="mailto:{{email}}" style="color: var(--primary); text-decoration: none; font-weight: 600;">{{email}}</a>
                                 </div>
                                 {{#notes}}
-                                <div class="contact-notes">{{notes}}</div>
+                                <div style="font-size: var(--text-xs); color: var(--on-surface-variant); margin-top: var(--space-sm); padding-top: var(--space-sm); border-top: 1px solid var(--outline-variant); font-style: italic;">
+                                    {{notes}}
+                                </div>
                                 {{/notes}}
                             </div>
                             {{/contacts.makeTeam}}
@@ -1057,7 +761,7 @@
         </section>
 
         <!-- Technical Section -->
-        <section id="technical" class="section">
+        <section id="technical" class="section intersection-animate">
             <div class="section-header">
                 <h2 class="section-title">Technical Architecture</h2>
                 <p class="section-subtitle">Integration approach and system requirements</p>
@@ -1070,26 +774,26 @@
                 </div>
                 <div class="collapsible-content">
                     <div class="collapsible-body">
-                        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
-                            <span style="font-weight: 600;">Complexity:</span>
-                            <span class="complexity-badge complexity-{{technical.complexity}}">{{technical.complexity}}</span>
+                        <div style="display: flex; align-items: center; gap: var(--space-md); margin-bottom: var(--space-lg);">
+                            <span style="font-weight: 700;">Complexity:</span>
+                            <span class="status-badge" data-status="{{technical.complexity}}" style="text-transform: uppercase;">{{technical.complexity}}</span>
                         </div>
 
                         {{#technical.architecture}}
-                        <div class="architecture-diagram">
-                            <h4 style="margin-bottom: 12px; color: var(--text-primary);">Data Flow</h4>
-                            <div>{{technical.architecture.dataFlow}}</div>
+                        <div style="background: var(--surface-variant); border: 1px solid var(--outline-variant); border-radius: var(--radius-lg); padding: var(--space-lg); margin: var(--space-lg) 0; font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace; font-size: var(--text-sm); overflow-x: auto;">
+                            <h4 style="margin-bottom: var(--space-sm); color: var(--on-surface); font-family: inherit;">Data Flow</h4>
+                            <div style="white-space: pre-wrap;">{{technical.architecture.dataFlow}}</div>
                         </div>
 
-                        <h4 style="margin: 24px 0 16px 0; color: var(--text-primary);">Integration Components</h4>
-                        <ul class="feature-list">
+                        <h4 style="margin: var(--space-lg) 0 var(--space-md) 0; color: var(--on-surface); font-weight: 700;">Integration Components</h4>
+                        <div style="display: grid; gap: var(--space-sm);">
                             {{#technical.architecture.components}}
-                            <li>
-                                <span class="feature-icon">🔧</span>
+                            <div style="display: flex; align-items: center; gap: var(--space-sm); padding: var(--space-sm); background: var(--surface-variant); border-radius: var(--radius-md);">
+                                <span style="font-size: var(--text-lg);">🔧</span>
                                 <span>{{.}}</span>
-                            </li>
+                            </div>
                             {{/technical.architecture.components}}
-                        </ul>
+                        </div>
                         {{/technical.architecture}}
                     </div>
                 </div>
@@ -1104,10 +808,10 @@
                     <div class="collapsible-body">
                         <div class="systems-grid">
                             {{#technical.systems}}
-                            <div class="system-card">
-                                <div class="system-name">{{name}}</div>
-                                <div class="system-type">{{type}} • {{deployment}}</div>
-                                <div class="system-details">{{details}}</div>
+                            <div class="card">
+                                <div style="font-size: var(--text-md); font-weight: 700; color: var(--on-surface); margin-bottom: var(--space-xs);">{{name}}</div>
+                                <div style="font-size: var(--text-xs); color: var(--on-surface-variant); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-sm);">{{type}} • {{deployment}}</div>
+                                <div style="font-size: var(--text-sm); color: var(--on-surface-variant);">{{details}}</div>
                             </div>
                             {{/technical.systems}}
                         </div>
@@ -1122,9 +826,11 @@
                 </div>
                 <div class="collapsible-content">
                     <div class="collapsible-body">
-                        <div class="challenge-list">
+                        <div style="display: grid; gap: var(--space-sm);">
                             {{#technical.challenges}}
-                            <div class="challenge-item">{{.}}</div>
+                            <div style="background: color-mix(in oklch, var(--error), transparent 95%); border-left: 3px solid var(--error); padding: var(--space-md); border-radius: 0 var(--radius-md) var(--radius-md) 0; font-size: var(--text-sm); line-height: 1.5;">
+                                {{.}}
+                            </div>
                             {{/technical.challenges}}
                         </div>
                     </div>
@@ -1141,10 +847,10 @@
                     <div class="collapsible-body">
                         <div class="card-grid">
                             <div class="card">
-                                <div class="card-header">
-                                    <div class="card-title">Technology Stack</div>
+                                <div style="margin-bottom: var(--space-md);">
+                                    <div style="font-size: var(--text-lg); font-weight: 700; color: var(--on-surface); margin-bottom: var(--space-xs);">Technology Stack</div>
                                 </div>
-                                <div class="card-content">
+                                <div style="font-size: var(--text-sm); line-height: 1.6;">
                                     <p><strong>Platform:</strong> {{technical.developmentApproach.preferredTechnology}}</p>
                                     <p><strong>SDK License:</strong> {{technical.developmentApproach.sdkLicense}}</p>
                                     <p><strong>Programming Model:</strong> {{technical.developmentApproach.programmingModel}}</p>
@@ -1152,10 +858,10 @@
                             </div>
 
                             <div class="card">
-                                <div class="card-header">
-                                    <div class="card-title">Integration Pattern</div>
+                                <div style="margin-bottom: var(--space-md);">
+                                    <div style="font-size: var(--text-lg); font-weight: 700; color: var(--on-surface); margin-bottom: var(--space-xs);">Integration Pattern</div>
                                 </div>
-                                <div class="card-content">
+                                <div style="font-size: var(--text-sm); line-height: 1.6;">
                                     <p><strong>API Pattern:</strong> {{technical.developmentApproach.apiPattern}}</p>
                                     <p><strong>Data Format:</strong> {{technical.developmentApproach.dataFormat}}</p>
                                     <p><strong>Security:</strong> {{technical.developmentApproach.securityModel}}</p>
@@ -1169,7 +875,7 @@
         </section>
 
         <!-- Timeline Section -->
-        <section id="timeline" class="section">
+        <section id="timeline" class="section intersection-animate">
             <div class="section-header">
                 <h2 class="section-title">Project Timeline</h2>
                 <p class="section-subtitle">Milestones and implementation schedule</p>
@@ -1182,21 +888,23 @@
                 </div>
                 <div class="collapsible-content">
                     <div class="collapsible-body">
-                        <div class="timeline">
+                        <div style="position: relative; margin: var(--space-lg) 0;">
+                            <div style="position: absolute; left: 20px; top: 0; bottom: 0; width: 2px; background: var(--outline);"></div>
                             {{#timeline.milestones}}
-                            <div class="timeline-item">
-                                <div class="timeline-date">{{date}}</div>
-                                <div class="timeline-title">{{event}}</div>
+                            <div style="position: relative; padding: var(--space-md) 0 var(--space-md) 60px; margin-bottom: var(--space-md);">
+                                <div style="position: absolute; left: 14px; top: 20px; width: 12px; height: 12px; border-radius: 50%; background: var(--primary); border: 2px solid var(--surface);"></div>
+                                <div style="font-size: var(--text-xs); font-weight: 700; color: var(--on-surface-variant); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-xs);">{{date}}</div>
+                                <div style="font-size: var(--text-md); font-weight: 700; color: var(--on-surface); margin-bottom: var(--space-xs);">{{event}}</div>
                                 {{#details}}
-                                <div class="timeline-details">{{details}}</div>
+                                <div style="font-size: var(--text-sm); color: var(--on-surface-variant); margin-bottom: var(--space-sm);">{{details}}</div>
                                 {{/details}}
-                                <span class="timeline-status status-{{status}}">{{status}}</span>
+                                <span class="status-badge" data-status="{{status}}">{{status}}</span>
                             </div>
                             {{/timeline.milestones}}
                         </div>
 
                         {{#timeline.expectedClose}}
-                        <div style="margin-top: 24px; padding: 16px; background: var(--bg-secondary); border-radius: var(--radius-sm);">
+                        <div style="margin-top: var(--space-lg); padding: var(--space-md); background: var(--surface-variant); border-radius: var(--radius-md);">
                             <strong>Expected Close:</strong> {{timeline.expectedClose}}
                         </div>
                         {{/timeline.expectedClose}}
@@ -1214,11 +922,11 @@
                     <div class="collapsible-body">
                         <div class="card-grid">
                             <div class="card">
-                                <div class="card-header">
-                                    <div class="card-title">Custom SDK Development</div>
-                                    <div class="card-subtitle">Full integration approach</div>
+                                <div style="margin-bottom: var(--space-md);">
+                                    <div style="font-size: var(--text-lg); font-weight: 700; color: var(--on-surface); margin-bottom: var(--space-xs);">Custom SDK Development</div>
+                                    <div style="font-size: var(--text-sm); color: var(--on-surface-variant);">Full integration approach</div>
                                 </div>
-                                <div class="card-content">
+                                <div style="font-size: var(--text-sm); line-height: 1.6;">
                                     <p><strong>Timeline:</strong> {{timeline.implementationTimeline.customSDK}}</p>
                                     <p>Includes planning, development, and testing phases</p>
                                 </div>
@@ -1226,11 +934,11 @@
 
                             {{#timeline.implementationTimeline.cloudMigration}}
                             <div class="card">
-                                <div class="card-header">
-                                    <div class="card-title">Cloud Migration Alternative</div>
-                                    <div class="card-subtitle">Faster time-to-value</div>
+                                <div style="margin-bottom: var(--space-md);">
+                                    <div style="font-size: var(--text-lg); font-weight: 700; color: var(--on-surface); margin-bottom: var(--space-xs);">Cloud Migration Alternative</div>
+                                    <div style="font-size: var(--text-sm); color: var(--on-surface-variant);">Faster time-to-value</div>
                                 </div>
-                                <div class="card-content">
+                                <div style="font-size: var(--text-sm); line-height: 1.6;">
                                     <p><strong>Timeline:</strong> {{timeline.implementationTimeline.cloudMigration}}</p>
                                     <p>Migration plus standard API integration</p>
                                 </div>
@@ -1244,7 +952,7 @@
         </section>
 
         <!-- Risks Section -->
-        <section id="risks" class="section">
+        <section id="risks" class="section intersection-animate">
             <div class="section-header">
                 <h2 class="section-title">Risk Assessment</h2>
                 <p class="section-subtitle">Potential blockers and mitigation strategies</p>
@@ -1257,14 +965,16 @@
                 </div>
                 <div class="collapsible-content">
                     <div class="collapsible-body">
-                        <div class="risk-grid">
+                        <div style="display: grid; gap: var(--space-md);">
                             {{#risks}}
-                            <div class="risk-item">
-                                <div class="risk-header">
-                                    <div class="risk-description">{{description}}</div>
-                                    <div class="risk-impact impact-{{impact}}">{{impact}} impact</div>
+                            <div class="card">
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-sm);">
+                                    <div style="font-size: var(--text-md); font-weight: 600; color: var(--on-surface); flex: 1; margin-right: var(--space-md);">{{description}}</div>
+                                    <span class="status-badge" data-status="{{impact}}" style="text-transform: uppercase;">{{impact}} impact</span>
                                 </div>
-                                <div class="risk-mitigation"><strong>Mitigation:</strong> {{mitigation}}</div>
+                                <div style="font-size: var(--text-sm); color: var(--on-surface-variant); line-height: 1.5;">
+                                    <strong>Mitigation:</strong> {{mitigation}}
+                                </div>
                             </div>
                             {{/risks}}
                         </div>
@@ -1275,7 +985,7 @@
 
         <!-- Pricing Section -->
         {{#pricing}}
-        <section class="section">
+        <section class="section intersection-animate">
             <div class="section-header">
                 <h2 class="section-title">Investment & ROI</h2>
                 <p class="section-subtitle">Pricing structure and expansion opportunities</p>
@@ -1288,20 +998,20 @@
                 </div>
                 <div class="collapsible-content">
                     <div class="collapsible-body">
-                        <div class="pricing-card">
-                            <div class="pricing-title">{{pricing.currentProposal.totalYear1}}</div>
-                            <div class="pricing-subtitle">Year 1 Investment</div>
-                            <div style="margin-top: 20px; text-align: left;">
+                        <div style="background: linear-gradient(135deg, var(--primary), color-mix(in oklch, var(--primary), var(--secondary) 30%)); color: var(--on-primary); border-radius: var(--radius-lg); padding: var(--space-2xl); text-align: center; margin: var(--space-lg) 0;">
+                            <div style="font-size: var(--text-2xl); font-weight: 800; margin-bottom: var(--space-sm);">{{pricing.currentProposal.totalYear1}}</div>
+                            <div style="opacity: 0.9; margin-bottom: var(--space-lg);">Year 1 Investment</div>
+                            <div style="text-align: left;">
                                 <p>Platform Fee: {{pricing.currentProposal.platformFee}}</p>
                                 <p>Operations: {{pricing.currentProposal.operationsCost}}</p>
                                 <p>Implementation: {{pricing.currentProposal.implementation}}</p>
-                                <p style="margin-top: 12px; font-size: 14px; opacity: 0.9;">
+                                <p style="margin-top: var(--space-sm); font-size: var(--text-sm); opacity: 0.9;">
                                     Recurring: {{pricing.currentProposal.annualRecurring}} annually
                                 </p>
                             </div>
                         </div>
 
-                        <div style="margin-top: 16px; padding: 16px; background: var(--bg-secondary); border-radius: var(--radius-sm); font-size: 14px;">
+                        <div style="margin-top: var(--space-md); padding: var(--space-md); background: var(--surface-variant); border-radius: var(--radius-md); font-size: var(--text-sm);">
                             <strong>Operations Example:</strong> {{pricing.currentProposal.operationsExample}}
                         </div>
                     </div>
@@ -1317,14 +1027,14 @@
                 <div class="collapsible-content">
                     <div class="collapsible-body">
                         <div class="card">
-                            <div class="card-header">
-                                <div class="card-title">Mexico Phase 2</div>
-                                <div class="card-subtitle">Additional revenue potential</div>
+                            <div style="margin-bottom: var(--space-md);">
+                                <div style="font-size: var(--text-lg); font-weight: 700; color: var(--on-surface); margin-bottom: var(--space-xs);">Mexico Phase 2</div>
+                                <div style="font-size: var(--text-sm); color: var(--on-surface-variant);">Additional revenue potential</div>
                             </div>
-                            <div class="card-content">
+                            <div style="font-size: var(--text-sm); line-height: 1.6;">
                                 <p><strong>Additional Value:</strong> {{pricing.expansionOpportunity.mexicoPhase2}}</p>
                                 <p><strong>Total Engagement:</strong> {{pricing.expansionOpportunity.totalMultiYear}}</p>
-                                <p style="margin-top: 12px; font-size: 14px; color: var(--text-secondary);">
+                                <p style="margin-top: var(--space-sm); color: var(--on-surface-variant);">
                                     {{pricing.expansionOpportunity.note}}
                                 </p>
                             </div>
@@ -1338,7 +1048,7 @@
 
         <!-- Call Notes Section -->
         {{#notes}}
-        <section class="section">
+        <section class="section intersection-animate">
             <div class="section-header">
                 <h2 class="section-title">Call Intelligence</h2>
                 <p class="section-subtitle">Meeting notes and key insights</p>
@@ -1352,15 +1062,15 @@
                 <div class="collapsible-content">
                     <div class="collapsible-body">
                         {{#notes}}
-                        <div class="note-item">
-                            <div class="note-header">
-                                <div class="note-meta">{{date}} • {{author}}</div>
-                                <span class="note-type">{{type}}</span>
+                        <div class="card" style="margin-bottom: var(--space-md);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm);">
+                                <div style="font-size: var(--text-sm); color: var(--on-surface-variant);">{{date}} • {{author}}</div>
+                                <span style="padding: var(--space-xs) var(--space-sm); border-radius: var(--radius-2xl); font-size: var(--text-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; background: var(--surface-container); color: var(--on-surface-variant);">{{type}}</span>
                             </div>
-                            <div class="note-content">{{content}}</div>
+                            <div style="font-size: var(--text-sm); line-height: 1.6; color: var(--on-surface);">{{content}}</div>
                             {{#recording}}
-                            <div style="margin-top: 12px;">
-                                <a href="#" class="recording-link">🎥 {{recording}}</a>
+                            <div style="margin-top: var(--space-sm);">
+                                <a href="#" style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: var(--text-xs);">🎥 {{recording}}</a>
                             </div>
                             {{/recording}}
                         </div>
@@ -1373,109 +1083,281 @@
 
         <!-- Action Items -->
         {{#callToAction}}
-        <section class="section">
+        <section class="section intersection-animate">
             <div class="section-header">
                 <h2 class="section-title">Next Steps</h2>
                 <p class="section-subtitle">Critical actions and success metrics</p>
             </div>
 
-            <div class="action-grid">
-                <div class="action-card">
-                    <div class="action-title">Immediate Actions</div>
-                    <div style="margin-bottom: 16px; padding: 12px; background: var(--primary); color: white; border-radius: var(--radius-sm); font-weight: 500;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-lg); margin: var(--space-2xl) 0;">
+                <div style="background: linear-gradient(135deg, var(--surface-variant), var(--surface-container)); border: 1px solid var(--outline-variant); border-radius: var(--radius-lg); padding: var(--space-lg);">
+                    <div style="font-size: var(--text-lg); font-weight: 700; color: var(--on-surface); margin-bottom: var(--space-md);">Immediate Actions</div>
+                    <div style="margin-bottom: var(--space-md); padding: var(--space-sm); background: var(--primary); color: var(--on-primary); border-radius: var(--radius-md); font-weight: 600;">
                         {{callToAction.immediateNext}}
                     </div>
                 </div>
 
-                <div class="action-card">
-                    <div class="action-title">Critical Questions</div>
-                    <ul class="action-list">
+                <div style="background: linear-gradient(135deg, var(--surface-variant), var(--surface-container)); border: 1px solid var(--outline-variant); border-radius: var(--radius-lg); padding: var(--space-lg);">
+                    <div style="font-size: var(--text-lg); font-weight: 700; color: var(--on-surface); margin-bottom: var(--space-md);">Critical Questions</div>
+                    <div style="display: grid; gap: var(--space-sm);">
                         {{#callToAction.criticalQuestions}}
-                        <li>{{.}}</li>
+                        <div style="padding: var(--space-sm) 0; font-size: var(--text-sm); color: var(--on-surface-variant); border-bottom: 1px solid var(--outline-variant); line-height: 1.5;">{{.}}</div>
                         {{/callToAction.criticalQuestions}}
-                    </ul>
+                    </div>
                 </div>
 
-                <div class="action-card">
-                    <div class="action-title">Success Metrics</div>
-                    <ul class="action-list">
+                <div style="background: linear-gradient(135deg, var(--surface-variant), var(--surface-container)); border: 1px solid var(--outline-variant); border-radius: var(--radius-lg); padding: var(--space-lg);">
+                    <div style="font-size: var(--text-lg); font-weight: 700; color: var(--on-surface); margin-bottom: var(--space-md);">Success Metrics</div>
+                    <div style="display: grid; gap: var(--space-sm);">
                         {{#callToAction.successMetrics}}
-                        <li>{{.}}</li>
+                        <div style="padding: var(--space-sm) 0; font-size: var(--text-sm); color: var(--on-surface-variant); border-bottom: 1px solid var(--outline-variant); line-height: 1.5;">{{.}}</div>
                         {{/callToAction.successMetrics}}
-                    </ul>
+                    </div>
                 </div>
             </div>
         </section>
         {{/callToAction}}
     </main>
 
-    <footer class="footer">
+    <footer style="margin-top: var(--space-3xl); padding: var(--space-2xl) 0; border-top: 1px solid var(--outline-variant); text-align: center; color: var(--on-surface-variant); font-size: var(--text-sm);">
         <div class="container">
-            <p>Generated with <span class="footer-brand">Make.com Sales Portal</span> • Last updated: {{lastUpdated}}</p>
-            <p style="margin-top: 8px; font-size: 12px;">Opportunity ID: {{opportunityId}}</p>
+            <p>Generated with <span style="color: var(--primary); font-weight: 700;">Make.com Sales Portal</span> • Last updated: {{lastUpdated}}</p>
+            <p style="margin-top: var(--space-sm); font-size: var(--text-xs);">Opportunity ID: {{opportunityId}}</p>
         </div>
     </footer>
 
     <script>
-        // Navigation scroll spy
-        function updateActiveNav() {
-            const sections = document.querySelectorAll('section[id]');
-            const navLinks = document.querySelectorAll('.nav-link');
-            
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop - 100;
-                if (scrollY >= sectionTop) {
-                    current = section.getAttribute('id');
+        // Web Components for Modern Architecture
+        class OpportunityPortal extends HTMLElement {
+            constructor() {
+                super();
+                this.initializeObservers();
+                this.bindEvents();
+            }
+
+            connectedCallback() {
+                this.initializeAnimations();
+                this.setupViewTransitions();
+            }
+
+            initializeObservers() {
+                // Intersection Observer for Scroll Animations
+                this.intersectionObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                        }
+                    });
+                }, {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                });
+
+                // Observe all animatable elements
+                document.querySelectorAll('.intersection-animate').forEach(el => {
+                    this.intersectionObserver.observe(el);
+                });
+            }
+
+            setupViewTransitions() {
+                // Modern View Transitions API
+                if ('startViewTransition' in document) {
+                    document.addEventListener('click', (e) => {
+                        if (e.target.matches('.nav-link')) {
+                            e.preventDefault();
+                            const targetId = e.target.getAttribute('href');
+                            const target = document.querySelector(targetId);
+                            
+                            if (target) {
+                                document.startViewTransition(() => {
+                                    target.scrollIntoView({ behavior: 'smooth' });
+                                });
+                            }
+                        }
+                    });
                 }
-            });
-            
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === '#' + current) {
-                    link.classList.add('active');
+            }
+
+            initializeAnimations() {
+                // Web Animations API for Complex Animations
+                this.setupParallaxEffects();
+                this.animateCounters();
+            }
+
+            setupParallaxEffects() {
+                const hero = document.querySelector('.hero');
+                if (hero) {
+                    window.addEventListener('scroll', () => {
+                        const scrolled = window.pageYOffset;
+                        const parallax = scrolled * 0.5;
+                        hero.style.transform = `translateY(${parallax}px)`;
+                    });
                 }
-            });
+            }
+
+            animateCounters() {
+                const counters = document.querySelectorAll('[data-counter]');
+                counters.forEach(counter => {
+                    const target = parseInt(counter.dataset.counter);
+                    const animation = counter.animate([
+                        { '--counter': 0 },
+                        { '--counter': target }
+                    ], {
+                        duration: 2000,
+                        easing: 'ease-out'
+                    });
+                });
+            }
+
+            bindEvents() {
+                // Enhanced Event Delegation
+                document.addEventListener('click', this.handleClick.bind(this));
+                document.addEventListener('scroll', this.handleScroll.bind(this));
+                
+                // Modern Pointer Events
+                document.addEventListener('pointerdown', this.handlePointerDown.bind(this));
+            }
+
+            handleClick(e) {
+                // Collapsible functionality with enhanced animations
+                if (e.target.closest('.collapsible-header')) {
+                    const header = e.target.closest('.collapsible-header');
+                    const collapsible = header.parentElement;
+                    const content = collapsible.querySelector('.collapsible-content');
+                    
+                    if (collapsible.classList.contains('expanded')) {
+                        // Collapse with Web Animations API
+                        const animation = content.animate([
+                            { maxHeight: content.scrollHeight + 'px', opacity: 1 },
+                            { maxHeight: '0px', opacity: 0 }
+                        ], {
+                            duration: 400,
+                            easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
+                        });
+                        
+                        animation.onfinish = () => {
+                            collapsible.classList.remove('expanded');
+                        };
+                    } else {
+                        // Expand
+                        collapsible.classList.add('expanded');
+                        content.animate([
+                            { maxHeight: '0px', opacity: 0 },
+                            { maxHeight: content.scrollHeight + 'px', opacity: 1 }
+                        ], {
+                            duration: 400,
+                            easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
+                        });
+                    }
+                }
+            }
+
+            handleScroll() {
+                // Navigation scroll spy with modern features
+                this.updateActiveNavigation();
+                this.updateScrollProgress();
+            }
+
+            handlePointerDown(e) {
+                // Modern pointer interaction feedback
+                if (e.target.matches('.btn') || e.target.matches('.card')) {
+                    e.target.style.setProperty('--pointer-x', e.clientX + 'px');
+                    e.target.style.setProperty('--pointer-y', e.clientY + 'px');
+                }
+            }
+
+            updateActiveNavigation() {
+                const sections = document.querySelectorAll('section[id]');
+                const navLinks = document.querySelectorAll('.nav-link');
+                
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - 100;
+                    if (window.scrollY >= sectionTop) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + current) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+
+            updateScrollProgress() {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                
+                document.documentElement.style.setProperty('--scroll-progress', scrolled + '%');
+            }
         }
 
-        // Collapsible functionality
+        // Service Worker for Offline Capability
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('data:text/javascript;base64,' + btoa(`
+                const CACHE_NAME = 'sales-portal-v1';
+                self.addEventListener('install', e => {
+                    e.waitUntil(
+                        caches.open(CACHE_NAME).then(cache => {
+                            return cache.addAll(['/']);
+                        })
+                    );
+                });
+                self.addEventListener('fetch', e => {
+                    e.respondWith(
+                        caches.match(e.request).then(response => {
+                            return response || fetch(e.request);
+                        })
+                    );
+                });
+            `));
+        }
+
+        // Global Functions for Template Compatibility
         function toggleCollapsible(header) {
-            const collapsible = header.parentElement;
-            collapsible.classList.toggle('expanded');
+            const event = new CustomEvent('click', { bubbles: true });
+            header.dispatchEvent(event);
         }
 
-        // Smooth scroll for navigation
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const target = document.querySelector(link.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
+        // Initialize Portal
+        document.addEventListener('DOMContentLoaded', () => {
+            customElements.define('opportunity-portal', OpportunityPortal);
+            const portal = new OpportunityPortal();
+            document.body.appendChild(portal);
         });
 
-        // Initialize
-        window.addEventListener('scroll', updateActiveNav);
-        window.addEventListener('load', updateActiveNav);
+        // Modern CSS Custom Properties Animation
+        document.documentElement.style.setProperty('--load-time', Date.now());
 
-        // Animate in elements on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate-in');
+        // Performance Observer for Core Web Vitals
+        if ('PerformanceObserver' in window) {
+            new PerformanceObserver((list) => {
+                for (const entry of list.getEntries()) {
+                    if (entry.entryType === 'largest-contentful-paint') {
+                        console.log('LCP:', entry.startTime);
+                    }
                 }
-            });
-        }, observerOptions);
+            }).observe({ entryTypes: ['largest-contentful-paint'] });
+        }
 
-        document.querySelectorAll('.section').forEach(el => {
-            observer.observe(el);
-        });
+        // CSS Paint Worklet Registration (if supported)
+        if ('CSS' in window && 'paintWorklet' in CSS) {
+            CSS.paintWorklet.addModule('data:text/javascript;base64,' + btoa(`
+                class GradientPainter {
+                    paint(ctx, size, props) {
+                        const gradient = ctx.createLinearGradient(0, 0, size.width, size.height);
+                        gradient.addColorStop(0, 'oklch(0.7 0.15 280)');
+                        gradient.addColorStop(1, 'oklch(0.65 0.15 150)');
+                        ctx.fillStyle = gradient;
+                        ctx.fillRect(0, 0, size.width, size.height);
+                    }
+                }
+                registerPaint('custom-gradient', GradientPainter);
+            `));
+        }
     </script>
 </body>
 </html>
