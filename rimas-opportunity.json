@@ -1,0 +1,170 @@
+{
+  "opportunityId": "rimas-2025-06",
+  "company": {
+    "name": "Rimas Music",
+    "location": "Puerto Rico (Spain office focus)",
+    "industry": "Music & Entertainment"
+  },
+  "status": {
+    "stage": "stalled",
+    "health": "yellow",
+    "lastActivity": "2025-05-19",
+    "nextAction": "Eugenio site visit to identify blockers"
+  },
+  "overview": {
+    "useCase": "Financial automation - QuickBooks journal entry synchronization to regional accounting systems",
+    "value": "Streamline multi-regional financial operations by automating journal entry transfers",
+    "pain": "Manual journal entry transfer between QuickBooks and regional accounting systems",
+    "solution": "Make.com Enterprise with On-Premise Agent + Custom API layer for Sage 50 Spain"
+  },
+  "contacts": {
+    "primary": {
+      "name": "Gustavo Rivera",
+      "role": "VP Finance & Accounting (Decision Maker)",
+      "email": "gustavor@rimasmusic.com",
+      "phone": "+1 (787) 554-7788"
+    },
+    "technical": [
+      {
+        "name": "Johan Vazquez-Alicea",
+        "role": "Technical Contact",
+        "email": "jvazquez@rimasmusic.com",
+        "phone": "+1 (787) 642-4469"
+      },
+      {
+        "name": "AMMartin",
+        "role": "Team Member",
+        "email": "amartin@rimasmusic.com"
+      }
+    ],
+    "makeTeam": [
+      {
+        "name": "David Ponce",
+        "role": "Account Executive",
+        "email": "d.ponce@make.com"
+      },
+      {
+        "name": "Jonathan",
+        "role": "Solution Engineer"
+      },
+      {
+        "name": "Eugenio",
+        "role": "Value Engineer"
+      },
+      {
+        "name": "Ed Axe",
+        "role": "Implementation Partner",
+        "email": "ed@axeautomation.co"
+      }
+    ]
+  },
+  "technical": {
+    "complexity": "high",
+    "systems": [
+      {
+        "name": "QuickBooks",
+        "type": "source",
+        "version": "Cloud",
+        "deployment": "cloud"
+      },
+      {
+        "name": "Sage 50 Spain",
+        "type": "target",
+        "version": "España (formerly ContaPlus)",
+        "deployment": "on-premise"
+      },
+      {
+        "name": "CONTPAQi",
+        "type": "target",
+        "version": "Mexico Future",
+        "deployment": "cloud"
+      }
+    ],
+    "challenges": [
+      "Legacy System: Sage 50 Spain is Windows-only, file-based",
+      "No Standard API: Requires €1,500 SDK license for custom development",
+      "Regional Specificity: Spain version different from UK/US Sage 50",
+      "On-Premise Requirements: Security-conscious financial services client",
+      "Custom Integration Pattern: API + Make.com HTTP Agent + On-Prem Agent"
+    ],
+    "requirements": [
+      "Make.com Enterprise with On-Premise Agent",
+      "Custom API layer development",
+      "Sage 50 Spain SDK license (€1,500)",
+      "Windows environment with Visual Studio",
+      "ODBC for data retrieval + COM objects for data creation"
+    ]
+  },
+  "timeline": {
+    "milestones": [
+      {
+        "date": "2025-04-01",
+        "event": "Initial contact",
+        "status": "completed"
+      },
+      {
+        "date": "2025-05-05",
+        "event": "Technical discovery",
+        "status": "completed"
+      },
+      {
+        "date": "2025-05-07",
+        "event": "Demo completion",
+        "status": "completed"
+      },
+      {
+        "date": "2025-05-19",
+        "event": "Technical validation session",
+        "status": "completed"
+      },
+      {
+        "date": "2025-06-09",
+        "event": "Eugenio site visit",
+        "status": "upcoming"
+      }
+    ],
+    "expectedClose": "2025-07-31"
+  },
+  "risks": [
+    {
+      "description": "Technical Complexity: Custom development required for Spain integration",
+      "impact": "high",
+      "mitigation": "Partner-led implementation with Ed Axe's expertise"
+    },
+    {
+      "description": "Security Requirements: Financial data handling with on-premise constraints",
+      "impact": "medium",
+      "mitigation": "Make.com on-premise agent ensures data stays within network"
+    },
+    {
+      "description": "Multi-Stakeholder: Decision process involves multiple parties",
+      "impact": "medium",
+      "mitigation": "Site visit to align stakeholders and identify blockers"
+    },
+    {
+      "description": "Partner Dependency: Success relies on Ed Axe's implementation capabilities",
+      "impact": "medium",
+      "mitigation": "Provided comprehensive technical resources and documentation"
+    }
+  ],
+  "notes": [
+    {
+      "date": "2025-05-19",
+      "author": "Jonathan",
+      "content": "Technical validation session completed. Customer understands complexity.",
+      "type": "call"
+    },
+    {
+      "date": "2025-05-07",
+      "author": "David Ponce",
+      "content": "Demo of QuickBooks to Sage Intacct integration shown as proxy.",
+      "type": "meeting"
+    },
+    {
+      "date": "2025-06-09",
+      "author": "System",
+      "content": "Opportunity stalling after demo completion. Need to identify specific blockers.",
+      "type": "internal"
+    }
+  ]
+}

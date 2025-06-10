@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{company.name}} | Make.com Opportunity</title>
+    <style>
+        :root {
+            --primary: #8B5CF6;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --text-tertiary: #9CA3AF;
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F9FAFB;
+            --border: #E5E7EB;
+            --radius: 8px;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary: #A78BFA;
+                --text-primary: #F9FAFB;
+                --text-secondary: #D1D5DB;
+                --text-tertiary: #9CA3AF;
+                --bg-primary: #111827;
+                --bg-secondary: #1F2937;
+                --border: #374151;
+                --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 24px 16px;
+        }
+
+        .header {
+            margin-bottom: 32px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 24px;
+        }
+
+        .company-name {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .company-location {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .status-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+        }
+
+        .status-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        .status-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .status-stage {
+            background: var(--warning);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-stage.demo { background: var(--primary); }
+        .status-stage.technical { background: var(--primary); }
+        .status-stage.stalled { background: var(--warning); }
+        .status-stage.won { background: var(--success); }
+        .status-stage.lost { background: var(--error); }
+
+        .health-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 8px;
+        }
+
+        .health-green { background: var(--success); }
+        .health-yellow { background: var(--warning); }
+        .health-red { background: var(--error); }
+
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        .use-case {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--primary);
+            padding: 16px;
+            border-radius: 0 var(--radius) var(--radius) 0;
+            margin-bottom: 16px;
+        }
+
+        .contacts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        .contact-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+        }
+
+        .contact-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .contact-role {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .contact-info {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .complexity-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .complexity-low { background: #D1FAE5; color: #065F46; }
+        .complexity-medium { background: #FEF3C7; color: #92400E; }
+        .complexity-high { background: #FEE2E2; color: #991B1B; }
+
+        .systems-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .system-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px;
+            font-size: 13px;
+        }
+
+        .system-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .system-type {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .challenges-list {
+            list-style: none;
+            margin: 16px 0;
+        }
+
+        .challenges-list li {
+            background: var(--bg-secondary);
+            border-left: 3px solid var(--error);
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border-radius: 0 var(--radius) var(--radius) 0;
+            font-size: 13px;
+        }
+
+        .timeline {
+            margin: 16px 0;
+        }
+
+        .milestone {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .milestone:last-child {
+            border-bottom: none;
+        }
+
+        .milestone-date {
+            font-size: 12px;
+            color: var(--text-secondary);
+            width: 80px;
+            flex-shrink: 0;
+        }
+
+        .milestone-event {
+            flex: 1;
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        .milestone-status {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .milestone-completed { background: #D1FAE5; color: #065F46; }
+        .milestone-upcoming { background: #DBEAFE; color: #1E40AF; }
+        .milestone-overdue { background: #FEE2E2; color: #991B1B; }
+
+        .risks-list {
+            margin: 16px 0;
+        }
+
+        .risk-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .risk-description {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .risk-mitigation {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .risk-impact {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+
+        .impact-low { background: #D1FAE5; color: #065F46; }
+        .impact-medium { background: #FEF3C7; color: #92400E; }
+        .impact-high { background: #FEE2E2; color: #991B1B; }
+
+        .generated-info {
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-tertiary);
+            font-size: 12px;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 16px 12px;
+            }
+            
+            .status-grid,
+            .contacts-grid,
+            .systems-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="company-name">{{company.name}}</h1>
+            <p class="company-location">{{company.location}} • {{company.industry}}</p>
+        </header>
+
+        <div class="status-grid">
+            <div class="status-card">
+                <div class="status-label">Stage</div>
+                <div class="status-value">
+                    <span class="status-stage {{status.stage}}">{{status.stage}}</span>
+                    <span class="health-indicator health-{{status.health}}"></span>
+                </div>
+            </div>
+            <div class="status-card">
+                <div class="status-label">Last Activity</div>
+                <div class="status-value">{{status.lastActivity}}</div>
+            </div>
+            <div class="status-card">
+                <div class="status-label">Next Action</div>
+                <div class="status-value">{{status.nextAction}}</div>
+            </div>
+        </div>
+
+        <section class="section">
+            <h2 class="section-title">Overview</h2>
+            <div class="use-case">
+                <strong>Use Case:</strong> {{overview.useCase}}
+            </div>
+            <p><strong>Value:</strong> {{overview.value}}</p>
+            <p><strong>Solution:</strong> {{overview.solution}}</p>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Key Contacts</h2>
+            <div class="contacts-grid">
+                <div class="contact-card">
+                    <div class="contact-name">{{contacts.primary.name}}</div>
+                    <div class="contact-role">{{contacts.primary.role}}</div>
+                    <div class="contact-info">
+                        {{contacts.primary.email}}<br>
+                        {{contacts.primary.phone}}
+                    </div>
+                </div>
+                {{#contacts.technical}}
+                <div class="contact-card">
+                    <div class="contact-name">{{name}}</div>
+                    <div class="contact-role">{{role}}</div>
+                    <div class="contact-info">
+                        {{email}}<br>
+                        {{phone}}
+                    </div>
+                </div>
+                {{/contacts.technical}}
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Technical Landscape</h2>
+            <p>
+                <strong>Complexity:</strong> 
+                <span class="complexity-badge complexity-{{technical.complexity}}">{{technical.complexity}}</span>
+            </p>
+            
+            <div class="systems-list">
+                {{#technical.systems}}
+                <div class="system-item">
+                    <div class="system-name">{{name}}</div>
+                    <div class="system-type">{{type}} • {{deployment}}</div>
+                </div>
+                {{/technical.systems}}
+            </div>
+
+            {{#technical.challenges}}
+            <h3 style="margin: 24px 0 12px 0; font-size: 16px; color: var(--text-primary);">Key Challenges</h3>
+            <ul class="challenges-list">
+                {{#technical.challenges}}
+                <li>{{.}}</li>
+                {{/technical.challenges}}
+            </ul>
+            {{/technical.challenges}}
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Timeline</h2>
+            <div class="timeline">
+                {{#timeline.milestones}}
+                <div class="milestone">
+                    <div class="milestone-date">{{date}}</div>
+                    <div class="milestone-event">{{event}}</div>
+                    <span class="milestone-status milestone-{{status}}">{{status}}</span>
+                </div>
+                {{/timeline.milestones}}
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Risk Assessment</h2>
+            <div class="risks-list">
+                {{#risks}}
+                <div class="risk-item">
+                    <div class="risk-description">
+                        {{description}}
+                        <span class="risk-impact impact-{{impact}}">{{impact}} impact</span>
+                    </div>
+                    <div class="risk-mitigation"><strong>Mitigation:</strong> {{mitigation}}</div>
+                </div>
+                {{/risks}}
+            </div>
+        </section>
+
+        <div class="generated-info">
+            Generated with Make.com Sales Portal • Last updated: {{lastUpdated}}<br>
+            Opportunity ID: {{opportunityId}}
+        </div>
+    </div>
+</body>
+</html>

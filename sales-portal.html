@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make.com Sales Portal</title>
+    <style>
+        :root {
+            --primary: #8B5CF6;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --text-tertiary: #9CA3AF;
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F9FAFB;
+            --border: #E5E7EB;
+            --radius: 8px;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary: #A78BFA;
+                --text-primary: #F9FAFB;
+                --text-secondary: #D1D5DB;
+                --text-tertiary: #9CA3AF;
+                --bg-primary: #111827;
+                --bg-secondary: #1F2937;
+                --border: #374151;
+                --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 24px 16px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 32px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .tagline {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        .main-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-family: inherit;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: border-color 0.2s ease;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+
+        .form-textarea {
+            height: 120px;
+            resize: vertical;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+        }
+
+        .file-drop-zone {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 48px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--bg-primary);
+        }
+
+        .file-drop-zone:hover,
+        .file-drop-zone.drag-over {
+            border-color: var(--primary);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .file-drop-text {
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .file-drop-hint {
+            color: var(--text-tertiary);
+            font-size: 12px;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: #7C3AED;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 16px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .output-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-top: 24px;
+            display: none;
+        }
+
+        .output-url {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            font-size: 12px;
+            word-break: break-all;
+            margin: 16px 0;
+            color: var(--text-primary);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 16px;
+            margin: 16px 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 12px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .qr-code {
+            text-align: center;
+            margin: 24px 0;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: var(--radius);
+            margin: 16px 0;
+            font-size: 14px;
+        }
+
+        .alert-success {
+            background: #D1FAE5;
+            color: #065F46;
+            border: 1px solid #A7F3D0;
+        }
+
+        .alert-warning {
+            background: #FEF3C7;
+            color: #92400E;
+            border: 1px solid #FDE68A;
+        }
+
+        .alert-error {
+            background: #FEE2E2;
+            color: #991B1B;
+            border: 1px solid #FECACA;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 16px 12px;
+            }
+            
+            .main-section {
+                padding: 20px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">Make.com Sales Portal</div>
+            <p class="tagline">Generate shareable sales opportunity micro-sites with data URLs</p>
+        </header>
+
+        <div class="main-section">
+            <h2 class="section-title">Create Opportunity Portal</h2>
+            
+            <div class="form-group">
+                <label class="form-label">Upload JSON Data</label>
+                <div class="file-drop-zone" id="fileDropZone">
+                    <div class="file-drop-text">Drop your sales opportunity JSON file here</div>
+                    <div class="file-drop-hint">or click to browse files</div>
+                </div>
+                <input type="file" id="fileInput" accept=".json" style="display: none;">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Or Paste JSON Data</label>
+                <textarea class="form-textarea" id="jsonInput" placeholder='Paste your opportunity JSON data here...'></textarea>
+            </div>
+
+            <div class="form-group">
+                <button class="btn" id="generateBtn" disabled>
+                    <span>🚀</span>
+                    Generate Portal URL
+                </button>
+                <button class="btn btn-secondary" id="loadSampleBtn">
+                    <span>📝</span>
+                    Load Sample Data
+                </button>
+            </div>
+
+            <div class="progress-bar hidden" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="output-section" id="outputSection">
+            <h3 class="section-title">Generated Portal</h3>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="compressionRatio">-</div>
+                    <div class="stat-label">Compression</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="urlSize">-</div>
+                    <div class="stat-label">URL Size</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="compatibility">-</div>
+                    <div class="stat-label">Platform Support</div>
+                </div>
+            </div>
+
+            <div class="output-url" id="outputUrl"></div>
+
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <button class="btn btn-secondary" id="copyBtn">
+                    <span>📋</span>
+                    Copy URL
+                </button>
+                <button class="btn btn-secondary" id="previewBtn">
+                    <span>👁️</span>
+                    Preview
+                </button>
+                <button class="btn btn-secondary" id="qrBtn">
+                    <span>📱</span>
+                    Generate QR
+                </button>
+            </div>
+
+            <div class="qr-code hidden" id="qrCode"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+    <script>
+        class SalesPortalGenerator {
+            constructor() {
+                this.initializeElements();
+                this.bindEvents();
+                this.template = null;
+                this.loadTemplate();
+            }
+
+            initializeElements() {
+                this.fileDropZone = document.getElementById('fileDropZone');
+                this.fileInput = document.getElementById('fileInput');
+                this.jsonInput = document.getElementById('jsonInput');
+                this.generateBtn = document.getElementById('generateBtn');
+                this.loadSampleBtn = document.getElementById('loadSampleBtn');
+                this.progressBar = document.getElementById('progressBar');
+                this.progressFill = document.getElementById('progressFill');
+                this.outputSection = document.getElementById('outputSection');
+                this.outputUrl = document.getElementById('outputUrl');
+                this.compressionRatio = document.getElementById('compressionRatio');
+                this.urlSize = document.getElementById('urlSize');
+                this.compatibility = document.getElementById('compatibility');
+                this.copyBtn = document.getElementById('copyBtn');
+                this.previewBtn = document.getElementById('previewBtn');
+                this.qrBtn = document.getElementById('qrBtn');
+                this.qrCode = document.getElementById('qrCode');
+            }
+
+            bindEvents() {
+                this.fileDropZone.addEventListener('click', () => this.fileInput.click());
+                this.fileDropZone.addEventListener('dragover', this.handleDragOver.bind(this));
+                this.fileDropZone.addEventListener('dragleave', this.handleDragLeave.bind(this));
+                this.fileDropZone.addEventListener('drop', this.handleDrop.bind(this));
+                this.fileInput.addEventListener('change', this.handleFileSelect.bind(this));
+                this.jsonInput.addEventListener('input', this.handleJsonInput.bind(this));
+                this.generateBtn.addEventListener('click', this.generatePortal.bind(this));
+                this.loadSampleBtn.addEventListener('click', this.loadSampleData.bind(this));
+                this.copyBtn.addEventListener('click', this.copyUrl.bind(this));
+                this.previewBtn.addEventListener('click', this.previewPortal.bind(this));
+                this.qrBtn.addEventListener('click', this.generateQR.bind(this));
+            }
+
+            async loadTemplate() {
+                try {
+                    const response = await fetch('opportunity-template.html');
+                    this.template = await response.text();
+                } catch (error) {
+                    console.error('Failed to load template:', error);
+                }
+            }
+
+            handleDragOver(e) {
+                e.preventDefault();
+                this.fileDropZone.classList.add('drag-over');
+            }
+
+            handleDragLeave(e) {
+                e.preventDefault();
+                this.fileDropZone.classList.remove('drag-over');
+            }
+
+            handleDrop(e) {
+                e.preventDefault();
+                this.fileDropZone.classList.remove('drag-over');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    this.processFile(files[0]);
+                }
+            }
+
+            handleFileSelect(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    this.processFile(file);
+                }
+            }
+
+            processFile(file) {
+                if (!file.name.toLowerCase().endsWith('.json')) {
+                    this.showAlert('Please select a JSON file.', 'error');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.jsonInput.value = e.target.result;
+                    this.validateInput();
+                };
+                reader.readAsText(file);
+            }
+
+            handleJsonInput() {
+                this.validateInput();
+            }
+
+            validateInput() {
+                const jsonText = this.jsonInput.value.trim();
+                if (!jsonText) {
+                    this.generateBtn.disabled = true;
+                    return;
+                }
+
+                try {
+                    JSON.parse(jsonText);
+                    this.generateBtn.disabled = false;
+                } catch (error) {
+                    this.generateBtn.disabled = true;
+                }
+            }
+
+            async loadSampleData() {
+                try {
+                    const response = await fetch('rimas-opportunity.json');
+                    const sampleData = await response.text();
+                    this.jsonInput.value = sampleData;
+                    this.validateInput();
+                } catch (error) {
+                    this.showAlert('Failed to load sample data.', 'error');
+                }
+            }
+
+            renderTemplate(data) {
+                if (!this.template) {
+                    throw new Error('Template not loaded');
+                }
+
+                let html = this.template;
+                
+                // Simple template replacement (Mustache-like)
+                html = html.replace(/\{\{([^}]+)\}\}/g, (match, path) => {
+                    const value = this.getNestedValue(data, path.trim());
+                    return value !== undefined ? value : match;
+                });
+
+                // Handle arrays (basic implementation)
+                html = html.replace(/\{\{#([^}]+)\}\}(.*?)\{\{\/[^}]+\}\}/gs, (match, arrayPath, content) => {
+                    const array = this.getNestedValue(data, arrayPath.trim());
+                    if (Array.isArray(array)) {
+                        return array.map(item => {
+                            return content.replace(/\{\{([^}]+)\}\}/g, (m, p) => {
+                                if (p.trim() === '.') return item;
+                                return this.getNestedValue(item, p.trim()) || m;
+                            });
+                        }).join('');
+                    }
+                    return '';
+                });
+
+                // Add current timestamp
+                const now = new Date().toLocaleDateString();
+                html = html.replace('{{lastUpdated}}', now);
+
+                return html;
+            }
+
+            getNestedValue(obj, path) {
+                return path.split('.').reduce((current, key) => current && current[key], obj);
+            }
+
+            async generatePortal() {
+                try {
+                    this.showProgress(true);
+                    this.updateProgress(10);
+
+                    const jsonData = JSON.parse(this.jsonInput.value);
+                    this.updateProgress(30);
+
+                    const html = this.renderTemplate(jsonData);
+                    this.updateProgress(50);
+
+                    // Compress the HTML
+                    const compressed = pako.deflate(html, { level: 9 });
+                    this.updateProgress(70);
+
+                    // Convert to base64
+                    const base64 = btoa(String.fromCharCode(...compressed));
+                    this.updateProgress(90);
+
+                    // Create data URL
+                    const dataUrl = `data:text/html;charset=utf-8;brotli,${base64}`;
+                    this.updateProgress(100);
+
+                    // Calculate stats
+                    const originalSize = html.length;
+                    const compressedSize = base64.length;
+                    const compressionRatio = ((1 - compressedSize / originalSize) * 100).toFixed(1);
+
+                    // Display results
+                    this.displayResults(dataUrl, compressionRatio, compressedSize);
+                    
+                    setTimeout(() => this.showProgress(false), 500);
+
+                } catch (error) {
+                    this.showAlert(`Generation failed: ${error.message}`, 'error');
+                    this.showProgress(false);
+                }
+            }
+
+            displayResults(dataUrl, compressionRatio, urlSize) {
+                this.outputUrl.textContent = dataUrl;
+                this.compressionRatio.textContent = `${compressionRatio}%`;
+                this.urlSize.textContent = `${(urlSize / 1024).toFixed(1)}KB`;
+                
+                // Platform compatibility
+                if (urlSize < 2048) {
+                    this.compatibility.textContent = 'All';
+                } else if (urlSize < 4096) {
+                    this.compatibility.textContent = 'Most';
+                } else {
+                    this.compatibility.textContent = 'Limited';
+                }
+
+                this.outputSection.style.display = 'block';
+            }
+
+            showProgress(show) {
+                this.progressBar.classList.toggle('hidden', !show);
+                if (!show) {
+                    this.progressFill.style.width = '0%';
+                }
+            }
+
+            updateProgress(percent) {
+                this.progressFill.style.width = `${percent}%`;
+            }
+
+            copyUrl() {
+                navigator.clipboard.writeText(this.outputUrl.textContent).then(() => {
+                    this.showAlert('URL copied to clipboard!', 'success');
+                });
+            }
+
+            previewPortal() {
+                const url = this.outputUrl.textContent;
+                window.open(url, '_blank');
+            }
+
+            generateQR() {
+                const url = this.outputUrl.textContent;
+                const qr = qrcode(0, 'M');
+                qr.addData(url);
+                qr.make();
+                
+                this.qrCode.innerHTML = qr.createImgTag(4);
+                this.qrCode.classList.remove('hidden');
+            }
+
+            showAlert(message, type) {
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type}`;
+                alert.textContent = message;
+                
+                document.querySelector('.main-section').appendChild(alert);
+                
+                setTimeout(() => alert.remove(), 5000);
+            }
+        }
+
+        // Initialize the portal generator
+        document.addEventListener('DOMContentLoaded', () => {
+            new SalesPortalGenerator();
+        });
+    </script>
+</body>
+</html>

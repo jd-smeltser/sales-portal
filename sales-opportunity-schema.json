@@ -1,0 +1,156 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Sales Opportunity Portal Schema",
+  "description": "Structured data format for Make.com sales opportunities",
+  "type": "object",
+  "required": ["opportunityId", "company", "status", "overview", "contacts", "technical", "timeline"],
+  "properties": {
+    "opportunityId": {
+      "type": "string",
+      "description": "Unique identifier for the opportunity"
+    },
+    "company": {
+      "type": "object",
+      "required": ["name", "location"],
+      "properties": {
+        "name": {"type": "string"},
+        "location": {"type": "string"},
+        "industry": {"type": "string"}
+      }
+    },
+    "status": {
+      "type": "object",
+      "required": ["stage", "health"],
+      "properties": {
+        "stage": {
+          "type": "string",
+          "enum": ["discovery", "demo", "technical", "negotiation", "closing", "stalled", "won", "lost"]
+        },
+        "health": {
+          "type": "string",
+          "enum": ["green", "yellow", "red"]
+        },
+        "lastActivity": {"type": "string", "format": "date"},
+        "nextAction": {"type": "string"}
+      }
+    },
+    "overview": {
+      "type": "object",
+      "required": ["useCase", "value"],
+      "properties": {
+        "useCase": {"type": "string"},
+        "value": {"type": "string"},
+        "pain": {"type": "string"},
+        "solution": {"type": "string"}
+      }
+    },
+    "contacts": {
+      "type": "object",
+      "required": ["primary"],
+      "properties": {
+        "primary": {
+          "type": "object",
+          "required": ["name", "role", "email"],
+          "properties": {
+            "name": {"type": "string"},
+            "role": {"type": "string"},
+            "email": {"type": "string"},
+            "phone": {"type": "string"}
+          }
+        },
+        "technical": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "role": {"type": "string"},
+              "email": {"type": "string"},
+              "phone": {"type": "string"}
+            }
+          }
+        },
+        "makeTeam": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "role": {"type": "string"},
+              "email": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "technical": {
+      "type": "object",
+      "properties": {
+        "complexity": {
+          "type": "string",
+          "enum": ["low", "medium", "high"]
+        },
+        "systems": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "type": {"type": "string", "enum": ["source", "target"]},
+              "version": {"type": "string"},
+              "deployment": {"type": "string", "enum": ["cloud", "on-premise", "hybrid"]}
+            }
+          }
+        },
+        "challenges": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "requirements": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    },
+    "timeline": {
+      "type": "object",
+      "properties": {
+        "milestones": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "date": {"type": "string", "format": "date"},
+              "event": {"type": "string"},
+              "status": {"type": "string", "enum": ["completed", "upcoming", "overdue"]}
+            }
+          }
+        },
+        "expectedClose": {"type": "string", "format": "date"}
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "description": {"type": "string"},
+          "impact": {"type": "string", "enum": ["low", "medium", "high"]},
+          "mitigation": {"type": "string"}
+        }
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {"type": "string", "format": "date"},
+          "author": {"type": "string"},
+          "content": {"type": "string"},
+          "type": {"type": "string", "enum": ["meeting", "email", "call", "internal"]}
+        }
+      }
+    }
+  }
+}
