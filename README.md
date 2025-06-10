@@ -1,6 +1,6 @@
 # Sales Opportunity Portal
 
-A bleeding-edge framework for transforming unstructured sales opportunity data into beautiful, shareable microsites.
+A bleeding-edge framework for transforming unstructured sales opportunity data into beautiful, interactive microsites.
 
 ## 🚀 Quick Start
 
@@ -11,10 +11,10 @@ A bleeding-edge framework for transforming unstructured sales opportunity data i
 ```
 
 ### For Manual Use
-1. Visit the [live portal](https://jd-smeltser.github.io/sales-portal/)
-2. Upload your opportunity JSON data
-3. Generate a compressed data URL
-4. Share the URL with stakeholders
+1. Create a JSON file following the `sales-opportunity-schema.json` structure
+2. Use the `opportunity-template.html` template 
+3. Deploy as a single HTML file anywhere
+4. Share with stakeholders
 
 ## 🎯 What This Creates
 
@@ -36,11 +36,14 @@ A bleeding-edge framework for transforming unstructured sales opportunity data i
 
 ## 🛠 Technology Stack
 
+- **CSS Layers**: Perfect cascade control and maintainability
+- **OKLCH Color Space**: Modern color functions with color-mix()
+- **Web Components**: Custom elements with full encapsulation
+- **View Transitions API**: Smooth navigation between sections
+- **Service Worker**: Offline capability and performance optimization
+- **Intersection Observer**: Scroll-triggered animations
+- **CSS Container Queries**: Responsive components
 - **Zero Dependencies**: Pure web standards only
-- **CompressionStream API**: Native browser compression
-- **Modern CSS**: Custom properties, container queries
-- **Progressive Enhancement**: Works everywhere, enhanced in modern browsers
-- **Single File Output**: Easy deployment anywhere
 
 ## 📐 Design Philosophy
 
@@ -61,10 +64,10 @@ A bleeding-edge framework for transforming unstructured sales opportunity data i
 
 ## 🔧 How It Works
 
-1. **Data Extraction**: Claude Code analyzes markdown files and extracts structured data
-2. **Site Generation**: Creates a beautiful HTML microsite using the template framework
-3. **Compression**: Generates a shareable data URL version
-4. **Deployment**: Single file works on any web server or as a data URL
+1. **Data Extraction**: Claude Code analyzes markdown files and extracts structured data into JSON
+2. **Template Processing**: Uses Mustache-style templating to populate the HTML template
+3. **Modern Web APIs**: Leverages bleeding-edge browser technologies for interactive features
+4. **Single File Output**: Self-contained HTML that works anywhere
 
 ## 📊 Features
 
@@ -87,6 +90,13 @@ A bleeding-edge framework for transforming unstructured sales opportunity data i
 - Risk factors with impact levels
 - Mitigation strategies
 - Success metrics
+
+### Interactive Features
+- Collapsible sections with smooth animations
+- Progressive disclosure for complex information
+- Scroll-triggered animations and effects
+- Touch-friendly mobile interactions
+- Print-optimized layouts
 
 ## 🚀 Deployment Options
 
@@ -114,13 +124,16 @@ git push
 ## 🎨 Customization
 
 ### Design System
-Modify CSS custom properties in the template:
+Built with CSS Layers and modern color functions:
 ```css
-:root {
-  --primary: #8B5CF6;    /* Make.com purple */
-  --success: #10B981;    /* Success indicators */
-  --warning: #F59E0B;    /* Attention items */
-  --error: #EF4444;      /* Risk factors */
+@layer design-tokens {
+  :root {
+    --primary: oklch(0.7 0.15 280);         /* Modern purple */
+    --success: oklch(0.65 0.15 150);        /* Success green */
+    --warning: oklch(0.7 0.12 80);          /* Warning amber */
+    --error: oklch(0.65 0.15 20);           /* Error red */
+    --surface: oklch(0.98 0.005 280);       /* Light surface */
+  }
 }
 ```
 
@@ -129,9 +142,10 @@ Extend `sales-opportunity-schema.json` for additional fields while maintaining b
 
 ## 📱 Browser Support
 
-- **Modern Browsers**: Full feature set (Chrome 88+, Safari 14+, Firefox 85+)
-- **Legacy Browsers**: Graceful degradation with core functionality
-- **Mobile**: Touch-friendly responsive design
+- **Cutting-Edge Features**: Chrome 105+, Safari 16+, Firefox 110+
+- **Core Functionality**: All modern browsers
+- **Graceful Degradation**: Progressive enhancement approach
+- **Mobile Optimized**: Touch-friendly responsive design
 
 ## 🔒 Privacy & Security
 
