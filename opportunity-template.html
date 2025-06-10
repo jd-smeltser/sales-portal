@@ -1295,26 +1295,8 @@
             }
         }
 
-        // Service Worker for Offline Capability
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('data:text/javascript;base64,' + btoa(`
-                const CACHE_NAME = 'sales-portal-v1';
-                self.addEventListener('install', e => {
-                    e.waitUntil(
-                        caches.open(CACHE_NAME).then(cache => {
-                            return cache.addAll(['/']);
-                        })
-                    );
-                });
-                self.addEventListener('fetch', e => {
-                    e.respondWith(
-                        caches.match(e.request).then(response => {
-                            return response || fetch(e.request);
-                        })
-                    );
-                });
-            `));
-        }
+        // Service Worker removed due to data URL restrictions
+        // Modern browsers don't allow service workers with data URLs for security
 
         // Global Functions for Template Compatibility
         function toggleCollapsible(header) {
@@ -1365,40 +1347,75 @@
         }
 
         function populateTemplate(data) {
-            // Simple Mustache-style template replacement
-            const template = document.documentElement.outerHTML;
+            // Get the original HTML template
+            let html = document.documentElement.outerHTML;
             
-            function replacePlaceholders(html, obj, prefix = '') {
-                let result = html;
-                
+            // Replace simple placeholders first
+            function replaceSimple(text, obj, prefix = '') {
                 for (const [key, value] of Object.entries(obj)) {
-                    const placeholder = prefix ? `${prefix}.${key}` : key;
+                    const fullKey = prefix ? `${prefix}.${key}` : key;
                     
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-                        result = replacePlaceholders(result, value, placeholder);
-                    } else if (Array.isArray(value)) {
-                        // Handle arrays with simple iteration
-                        const arrayPattern = new RegExp(`{{#${placeholder}}}([\\s\\S]*?){{/${placeholder}}}`, 'g');
-                        result = result.replace(arrayPattern, (match, content) => {
-                            return value.map(item => {
-                                if (typeof item === 'object') {
-                                    return replacePlaceholders(content, item);
-                                } else {
-                                    return content.replace(/{{\.}}/g, item);
-                                }
-                            }).join('');
-                        });
-                    } else {
-                        const simplePattern = new RegExp(`{{${placeholder}}}`, 'g');
-                        result = result.replace(simplePattern, value || '');
+                    if (typeof value === 'string' || typeof value === 'number') {
+                        const pattern = new RegExp(`{{${fullKey}}}`, 'g');
+                        text = text.replace(pattern, value);
+                    } else if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                        text = replaceSimple(text, value, fullKey);
                     }
                 }
-                
-                return result;
+                return text;
             }
             
-            const populatedHTML = replacePlaceholders(template, data);
-            document.documentElement.innerHTML = populatedHTML;
+            // Handle conditional sections {{#key}} ... {{/key}}
+            function replaceConditionals(text, obj, prefix = '') {
+                for (const [key, value] of Object.entries(obj)) {
+                    const fullKey = prefix ? `${prefix}.${key}` : key;
+                    
+                    if (Array.isArray(value)) {
+                        // Handle array iterations
+                        const pattern = new RegExp(`{{#${fullKey}}}([\\s\\S]*?){{/${fullKey}}}`, 'g');
+                        text = text.replace(pattern, (match, content) => {
+                            return value.map(item => {
+                                let itemContent = content;
+                                if (typeof item === 'object') {
+                                    itemContent = replaceSimple(itemContent, item);
+                                } else {
+                                    itemContent = itemContent.replace(/{{\.}}/g, item);
+                                }
+                                return itemContent;
+                            }).join('');
+                        });
+                    } else if (value && typeof value === 'object') {
+                        // Handle conditional object display
+                        const pattern = new RegExp(`{{#${fullKey}}}([\\s\\S]*?){{/${fullKey}}}`, 'g');
+                        text = text.replace(pattern, (match, content) => {
+                            return replaceSimple(content, value);
+                        });
+                        // Recurse for nested objects
+                        text = replaceConditionals(text, value, fullKey);
+                    } else if (value) {
+                        // Show conditional content if value exists
+                        const pattern = new RegExp(`{{#${fullKey}}}([\\s\\S]*?){{/${fullKey}}}`, 'g');
+                        text = text.replace(pattern, '$1');
+                    } else {
+                        // Hide conditional content if value doesn't exist
+                        const pattern = new RegExp(`{{#${fullKey}}}[\\s\\S]*?{{/${fullKey}}}`, 'g');
+                        text = text.replace(pattern, '');
+                    }
+                }
+                return text;
+            }
+            
+            // Process the template
+            html = replaceConditionals(html, data);
+            html = replaceSimple(html, data);
+            
+            // Clean up any remaining placeholders
+            html = html.replace(/{{[^}]+}}/g, '');
+            
+            // Update the document
+            document.open();
+            document.write(html);
+            document.close();
         }
 
         // Initialize Portal
