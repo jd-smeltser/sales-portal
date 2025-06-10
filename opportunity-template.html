@@ -213,28 +213,31 @@
                 }
             }
             
-            /* Collapsible Sections with Smooth Animations */
+            /* Progressive Disclosure - Calm Technology */
             .collapsible {
                 border: 1px solid var(--outline-variant);
                 border-radius: var(--radius-lg);
                 margin-bottom: var(--space-lg);
                 overflow: hidden;
-                transition: all 300ms var(--ease-out-expo);
+                transition: all 200ms var(--ease-out-expo);
+                background: var(--surface);
                 
                 &:hover {
-                    box-shadow: var(--shadow-md);
+                    box-shadow: var(--shadow-sm);
+                    border-color: color-mix(in oklch, var(--primary), transparent 80%);
                 }
             }
             
             .collapsible-header {
                 background: var(--surface-variant);
-                padding: var(--space-lg);
+                padding: var(--space-md) var(--space-lg);
                 cursor: pointer;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 user-select: none;
-                transition: background 200ms ease;
+                transition: background 150ms ease;
+                border-bottom: 1px solid transparent;
                 
                 &:hover {
                     background: var(--surface-container);
@@ -242,34 +245,84 @@
             }
             
             .collapsible-title {
-                font-size: var(--text-lg);
-                font-weight: 700;
+                font-size: var(--text-md);
+                font-weight: 600;
                 color: var(--on-surface);
+                display: flex;
+                align-items: center;
+                gap: var(--space-sm);
+            }
+            
+            .collapsible-preview {
+                font-size: var(--text-xs);
+                color: var(--on-surface-variant);
+                font-weight: 400;
+                margin-left: var(--space-md);
+                opacity: 0.8;
+            }
+            
+            .collapsible.expanded .collapsible-preview {
+                display: none;
             }
             
             .collapsible-icon {
-                font-size: var(--text-xl);
+                width: 20px;
+                height: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: var(--text-sm);
                 color: var(--on-surface-variant);
-                transition: transform 300ms var(--ease-spring);
+                transition: transform 200ms var(--ease-out-expo);
+                background: var(--surface);
+                border-radius: var(--radius-sm);
+                border: 1px solid var(--outline-variant);
             }
             
             .collapsible.expanded .collapsible-icon {
                 transform: rotate(180deg);
+                background: var(--primary);
+                color: var(--on-primary);
+                border-color: var(--primary);
             }
             
             .collapsible-content {
                 max-height: 0;
                 overflow: hidden;
-                transition: max-height 500ms var(--ease-out-expo);
+                transition: max-height 300ms var(--ease-out-expo);
             }
             
             .collapsible.expanded .collapsible-content {
-                max-height: 100vh;
+                max-height: 150vh;
             }
             
             .collapsible-body {
                 padding: var(--space-lg);
                 background: var(--surface);
+                border-top: 1px solid var(--outline-variant);
+            }
+            
+            /* Essential Information Always Visible */
+            .always-visible {
+                border: none;
+                background: transparent;
+                margin-bottom: var(--space-md);
+            }
+            
+            .always-visible .collapsible-content {
+                max-height: none;
+                overflow: visible;
+            }
+            
+            .always-visible .collapsible-header {
+                background: transparent;
+                padding: var(--space-sm) 0;
+                cursor: default;
+                border-bottom: 2px solid var(--primary);
+            }
+            
+            .always-visible .collapsible-icon {
+                display: none;
             }
         }
         
@@ -348,38 +401,83 @@
                 }
             }
             
-            /* Hero Section with Gradient */
+            /* Hero Section - Effortless Information Hierarchy */
             .hero {
-                padding: var(--space-3xl) 0;
+                padding: var(--space-2xl) 0;
                 background: linear-gradient(135deg, 
                     var(--surface-variant) 0%, 
-                    color-mix(in oklch, var(--primary), transparent 92%) 100%);
+                    color-mix(in oklch, var(--primary), transparent 95%) 100%);
                 border-bottom: 1px solid var(--outline-variant);
-                text-align: center;
+            }
+            
+            .hero-content {
+                display: grid;
+                grid-template-columns: 1fr auto;
+                gap: var(--space-xl);
+                align-items: center;
+                text-align: left;
             }
             
             .company-name {
-                font-size: var(--text-4xl);
-                font-weight: 900;
-                background: linear-gradient(135deg, var(--primary), var(--secondary));
-                background-clip: text;
-                -webkit-background-clip: text;
-                color: transparent;
-                margin-bottom: var(--space-sm);
-                letter-spacing: -0.02em;
+                font-size: var(--text-3xl);
+                font-weight: 800;
+                color: var(--on-surface);
+                margin-bottom: var(--space-xs);
+                letter-spacing: -0.01em;
             }
             
             .company-meta {
-                font-size: var(--text-lg);
+                font-size: var(--text-md);
                 color: var(--on-surface-variant);
-                margin-bottom: var(--space-md);
+                margin-bottom: var(--space-sm);
+                font-weight: 500;
             }
             
             .company-description {
-                font-size: var(--text-md);
+                font-size: var(--text-sm);
                 color: var(--on-surface-variant);
-                max-width: 60ch;
-                margin: 0 auto;
+                line-height: 1.5;
+                max-width: 50ch;
+            }
+            
+            /* Critical Status at a Glance */
+            .hero-status {
+                display: flex;
+                flex-direction: column;
+                gap: var(--space-sm);
+                align-items: flex-end;
+                text-align: right;
+            }
+            
+            .critical-status {
+                display: flex;
+                align-items: center;
+                gap: var(--space-sm);
+                padding: var(--space-sm) var(--space-md);
+                background: var(--surface);
+                border: 1px solid var(--outline-variant);
+                border-radius: var(--radius-lg);
+                font-weight: 600;
+                box-shadow: var(--shadow-sm);
+            }
+            
+            .next-action-summary {
+                font-size: var(--text-xs);
+                color: var(--on-surface-variant);
+                font-weight: 500;
+                max-width: 25ch;
+            }
+            
+            @container (max-width: 768px) {
+                .hero-content {
+                    grid-template-columns: 1fr;
+                    text-align: center;
+                }
+                
+                .hero-status {
+                    align-items: center;
+                    text-align: center;
+                }
             }
             
             /* Status Dashboard with CSS Grid */
@@ -508,11 +606,11 @@
             }
         }
         
-        /* Advanced Animations */
+        /* Advanced Animations - Performance Optimized */
         @keyframes slideInUp {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(20px);
             }
             to {
                 opacity: 1;
@@ -525,12 +623,44 @@
             to { opacity: 1; }
         }
         
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+        
         .animate-in {
-            animation: slideInUp 600ms var(--ease-out-expo) both;
+            animation: slideInUp 400ms var(--ease-out-expo) both;
         }
         
         .fade-in {
-            animation: fadeIn 400ms ease both;
+            animation: fadeIn 300ms ease both;
+        }
+        
+        /* Purposeful loading states */
+        .loading {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        /* Immediate feedback animations */
+        @keyframes success-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .success-feedback {
+            animation: success-pulse 200ms ease-out;
         }
         
         /* Intersection Observer Animations */
@@ -581,15 +711,31 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Hero Section - Effortless Information Access -->
     <header class="hero">
         <div class="container">
-            <div class="animate-in">
-                <h1 class="company-name">{{company.name}}</h1>
-                <div class="company-meta">{{company.location}} • {{company.industry}}</div>
-                {{#company.description}}
-                <p class="company-description">{{company.description}}</p>
-                {{/company.description}}
+            <div class="hero-content animate-in">
+                <div class="hero-main">
+                    <h1 class="company-name">{{company.name}}</h1>
+                    <div class="company-meta">{{company.location}} • {{company.industry}}</div>
+                    {{#company.description}}
+                    <p class="company-description">{{company.description}}</p>
+                    {{/company.description}}
+                </div>
+                
+                <!-- Critical Status at a Glance -->
+                <div class="hero-status">
+                    <div class="critical-status">
+                        <span class="health-dot" data-health="{{status.health}}"></span>
+                        <span class="status-badge" data-status="{{status.stage}}">{{status.stage}}</span>
+                    </div>
+                    {{#status.nextAction}}
+                    <div class="next-action-summary">Next: {{status.nextAction}}</div>
+                    {{/status.nextAction}}
+                    {{#overview.value}}
+                    <div class="next-action-summary" style="color: var(--success); font-weight: 600;">{{overview.value}}</div>
+                    {{/overview.value}}
+                </div>
             </div>
         </div>
     </header>
@@ -629,17 +775,11 @@
             {{/overview.value}}
         </section>
 
-        <!-- Overview Section -->
+        <!-- Essential Overview - Always Visible -->
         <section id="overview" class="section intersection-animate">
-            <div class="section-header">
-                <h2 class="section-title">Business Overview</h2>
-                <p class="section-subtitle">Understanding the opportunity and business drivers</p>
-            </div>
-
-            <div class="collapsible expanded">
-                <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                    <h3 class="collapsible-title">Use Case & Solution</h3>
-                    <span class="collapsible-icon">▼</span>
+            <div class="always-visible">
+                <div class="collapsible-header">
+                    <h2 class="collapsible-title">💼 Business Overview</h2>
                 </div>
                 <div class="collapsible-content">
                     <div class="collapsible-body">
@@ -671,15 +811,13 @@
 
         <!-- Contacts Section -->
         <section id="contacts" class="section intersection-animate">
-            <div class="section-header">
-                <h2 class="section-title">Key Stakeholders</h2>
-                <p class="section-subtitle">Decision makers and technical contacts</p>
-            </div>
-
-            <div class="collapsible expanded">
+            <div class="collapsible">
                 <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                    <h3 class="collapsible-title">Customer Team</h3>
-                    <span class="collapsible-icon">▼</span>
+                    <h3 class="collapsible-title">
+                        👥 Key Stakeholders
+                        <span class="collapsible-preview">{{contacts.primary.name}} + {{#contacts.technical}}{{#unless @first}}, {{/unless}}{{name}}{{/contacts.technical}}</span>
+                    </h3>
+                    <span class="collapsible-icon">▶</span>
                 </div>
                 <div class="collapsible-content">
                     <div class="collapsible-body">
@@ -733,8 +871,11 @@
             {{#contacts.makeTeam}}
             <div class="collapsible">
                 <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                    <h3 class="collapsible-title">Make.com Team</h3>
-                    <span class="collapsible-icon">▼</span>
+                    <h3 class="collapsible-title">
+                        🚀 Make.com Team
+                        <span class="collapsible-preview">{{#contacts.makeTeam}}{{name}}{{#unless @last}}, {{/unless}}{{/contacts.makeTeam}}</span>
+                    </h3>
+                    <span class="collapsible-icon">▶</span>
                 </div>
                 <div class="collapsible-content">
                     <div class="collapsible-body">
@@ -762,15 +903,13 @@
 
         <!-- Technical Section -->
         <section id="technical" class="section intersection-animate">
-            <div class="section-header">
-                <h2 class="section-title">Technical Architecture</h2>
-                <p class="section-subtitle">Integration approach and system requirements</p>
-            </div>
-
-            <div class="collapsible expanded">
+            <div class="collapsible">
                 <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                    <h3 class="collapsible-title">Architecture Overview</h3>
-                    <span class="collapsible-icon">▼</span>
+                    <h3 class="collapsible-title">
+                        ⚙️ Technical Architecture
+                        <span class="collapsible-preview">{{technical.complexity}} complexity • {{#technical.systems}}{{name}}{{#unless @last}}, {{/unless}}{{/technical.systems}}</span>
+                    </h3>
+                    <span class="collapsible-icon">▶</span>
                 </div>
                 <div class="collapsible-content">
                     <div class="collapsible-body">
@@ -1219,19 +1358,37 @@
             }
 
             handleClick(e) {
-                // Collapsible functionality with enhanced animations
+                // Purposeful micro-interactions aligned with design philosophy
                 if (e.target.closest('.collapsible-header')) {
                     const header = e.target.closest('.collapsible-header');
                     const collapsible = header.parentElement;
                     const content = collapsible.querySelector('.collapsible-content');
+                    const icon = header.querySelector('.collapsible-icon');
+                    
+                    // Skip interaction for always-visible sections
+                    if (collapsible.classList.contains('always-visible')) return;
+                    
+                    // Immediate feedback - button state change
+                    header.style.transform = 'scale(0.98)';
+                    setTimeout(() => {
+                        header.style.transform = '';
+                    }, 100);
                     
                     if (collapsible.classList.contains('expanded')) {
-                        // Collapse with Web Animations API
+                        // Collapse with gentle animation - calm technology
                         const animation = content.animate([
-                            { maxHeight: content.scrollHeight + 'px', opacity: 1 },
-                            { maxHeight: '0px', opacity: 0 }
+                            { 
+                                maxHeight: content.scrollHeight + 'px', 
+                                opacity: 1,
+                                transform: 'translateY(0)'
+                            },
+                            { 
+                                maxHeight: '0px', 
+                                opacity: 0,
+                                transform: 'translateY(-10px)'
+                            }
                         ], {
-                            duration: 400,
+                            duration: 250,
                             easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
                         });
                         
@@ -1239,16 +1396,58 @@
                             collapsible.classList.remove('expanded');
                         };
                     } else {
-                        // Expand
+                        // Expand with purposeful animation
                         collapsible.classList.add('expanded');
+                        
+                        // Subtle visual feedback for successful action
+                        const ripple = document.createElement('div');
+                        ripple.style.cssText = `
+                            position: absolute;
+                            border-radius: 50%;
+                            background: color-mix(in oklch, var(--primary), transparent 80%);
+                            transform: scale(0);
+                            animation: ripple 300ms ease-out;
+                            pointer-events: none;
+                            left: ${e.clientX - header.getBoundingClientRect().left - 10}px;
+                            top: ${e.clientY - header.getBoundingClientRect().top - 10}px;
+                            width: 20px;
+                            height: 20px;
+                        `;
+                        
+                        header.style.position = 'relative';
+                        header.appendChild(ripple);
+                        setTimeout(() => ripple.remove(), 300);
+                        
                         content.animate([
-                            { maxHeight: '0px', opacity: 0 },
-                            { maxHeight: content.scrollHeight + 'px', opacity: 1 }
+                            { 
+                                maxHeight: '0px', 
+                                opacity: 0,
+                                transform: 'translateY(-10px)'
+                            },
+                            { 
+                                maxHeight: content.scrollHeight + 'px', 
+                                opacity: 1,
+                                transform: 'translateY(0)'
+                            }
                         ], {
-                            duration: 400,
+                            duration: 300,
                             easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
                         });
                     }
+                }
+                
+                // Email link interactions - helpful feedback
+                if (e.target.matches('a[href^="mailto:"]')) {
+                    // Subtle confirmation that email action is happening
+                    const link = e.target;
+                    const originalText = link.textContent;
+                    link.style.transform = 'scale(0.95)';
+                    link.textContent = '📧 Opening...';
+                    
+                    setTimeout(() => {
+                        link.style.transform = '';
+                        link.textContent = originalText;
+                    }, 500);
                 }
             }
 
@@ -1347,88 +1546,115 @@
         }
 
         function populateTemplate(data) {
-            // Get the original HTML template
-            let html = document.documentElement.outerHTML;
+            // Enhanced Mustache-style template renderer
             
-            // Replace simple placeholders first
-            function replaceSimple(text, obj, prefix = '') {
-                for (const [key, value] of Object.entries(obj)) {
-                    const fullKey = prefix ? `${prefix}.${key}` : key;
-                    
-                    if (typeof value === 'string' || typeof value === 'number') {
-                        const pattern = new RegExp(`{{${fullKey}}}`, 'g');
-                        text = text.replace(pattern, value);
-                    } else if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-                        text = replaceSimple(text, value, fullKey);
-                    }
-                }
-                return text;
-            }
+            // Store original HTML for processing
+            const originalHTML = document.documentElement.outerHTML;
             
-            // Handle conditional sections {{#key}} ... {{/key}}
-            function replaceConditionals(text, obj, prefix = '') {
-                for (const [key, value] of Object.entries(obj)) {
-                    const fullKey = prefix ? `${prefix}.${key}` : key;
+            function renderTemplate(template, context) {
+                // Handle array iterations {{#array}}...{{/array}}
+                template = template.replace(/{{#(\w+(?:\.\w+)*)}}([\s\S]*?){{\/\1}}/g, (match, path, content) => {
+                    const value = getNestedValue(context, path);
                     
                     if (Array.isArray(value)) {
-                        // Handle array iterations
-                        const pattern = new RegExp(`{{#${fullKey}}}([\\s\\S]*?){{/${fullKey}}}`, 'g');
-                        text = text.replace(pattern, (match, content) => {
-                            return value.map(item => {
-                                let itemContent = content;
-                                if (typeof item === 'object') {
-                                    itemContent = replaceSimple(itemContent, item);
-                                } else {
-                                    itemContent = itemContent.replace(/{{\.}}/g, item);
-                                }
-                                return itemContent;
-                            }).join('');
-                        });
+                        return value.map(item => {
+                            let itemContent = content;
+                            // Handle {{.}} for primitive array values
+                            itemContent = itemContent.replace(/{{\.}}/g, item);
+                            // Handle object properties
+                            if (typeof item === 'object' && item !== null) {
+                                itemContent = renderTemplate(itemContent, item);
+                            }
+                            return itemContent;
+                        }).join('');
                     } else if (value && typeof value === 'object') {
-                        // Handle conditional object display
-                        const pattern = new RegExp(`{{#${fullKey}}}([\\s\\S]*?){{/${fullKey}}}`, 'g');
-                        text = text.replace(pattern, (match, content) => {
-                            return replaceSimple(content, value);
-                        });
-                        // Recurse for nested objects
-                        text = replaceConditionals(text, value, fullKey);
+                        // Object exists, render content with object context
+                        return renderTemplate(content, value);
                     } else if (value) {
-                        // Show conditional content if value exists
-                        const pattern = new RegExp(`{{#${fullKey}}}([\\s\\S]*?){{/${fullKey}}}`, 'g');
-                        text = text.replace(pattern, '$1');
+                        // Truthy value, show content
+                        return renderTemplate(content, context);
                     } else {
-                        // Hide conditional content if value doesn't exist
-                        const pattern = new RegExp(`{{#${fullKey}}}[\\s\\S]*?{{/${fullKey}}}`, 'g');
-                        text = text.replace(pattern, '');
+                        // Falsy value, hide content
+                        return '';
                     }
-                }
-                return text;
+                });
+                
+                // Handle simple variable substitutions {{variable}}
+                template = template.replace(/{{(\w+(?:\.\w+)*)}}/g, (match, path) => {
+                    const value = getNestedValue(context, path);
+                    return value !== undefined && value !== null ? String(value) : '';
+                });
+                
+                return template;
             }
             
-            // Process the template
-            html = replaceConditionals(html, data);
-            html = replaceSimple(html, data);
+            function getNestedValue(obj, path) {
+                return path.split('.').reduce((current, prop) => {
+                    return current && current[prop] !== undefined ? current[prop] : undefined;
+                }, obj);
+            }
             
-            // Clean up any remaining placeholders
-            html = html.replace(/{{[^}]+}}/g, '');
+            // Process template multiple times to handle nested conditionals
+            let processedHTML = originalHTML;
+            let previousHTML = '';
+            let iterations = 0;
+            
+            // Keep processing until no more changes or max iterations
+            while (processedHTML !== previousHTML && iterations < 10) {
+                previousHTML = processedHTML;
+                processedHTML = renderTemplate(processedHTML, data);
+                iterations++;
+            }
+            
+            // Clean up any remaining unprocessed placeholders
+            processedHTML = processedHTML.replace(/{{[^}]*}}/g, '');
             
             // Update the document
             document.open();
-            document.write(html);
+            document.write(processedHTML);
             document.close();
         }
 
-        // Initialize Portal
+        // Performance-First Initialization
         document.addEventListener('DOMContentLoaded', async () => {
-            // Load opportunity data first
+            // Performance monitoring
+            const startTime = performance.now();
+            
+            // Critical path: Load opportunity data first
             await loadOpportunityData();
             
-            // Then initialize components
-            customElements.define('opportunity-portal', OpportunityPortal);
-            const portal = new OpportunityPortal();
-            if (!document.body.querySelector('opportunity-portal')) {
-                document.body.appendChild(portal);
+            // Initialize components with progressive enhancement
+            if ('customElements' in window) {
+                customElements.define('opportunity-portal', OpportunityPortal);
+                const portal = new OpportunityPortal();
+                if (!document.body.querySelector('opportunity-portal')) {
+                    document.body.appendChild(portal);
+                }
             }
+            
+            // Performance feedback - align with "Performance as Experience"
+            const loadTime = performance.now() - startTime;
+            if (loadTime > 1000) {
+                console.warn(`Portal load time: ${loadTime.toFixed(2)}ms - Consider optimization`);
+            }
+            
+            // Prefetch critical fonts for immediate next interactions
+            if ('fonts' in document) {
+                document.fonts.ready.then(() => {
+                    document.body.classList.add('fonts-loaded');
+                });
+            }
+            
+            // Progressive enhancement: Advanced features
+            requestIdleCallback(() => {
+                // Non-critical enhancements when browser is idle
+                if ('IntersectionObserver' in window) {
+                    // Advanced scroll animations
+                }
+                if ('PerformanceObserver' in window) {
+                    // Performance monitoring
+                }
+            });
         });
 
         // Modern CSS Custom Properties Animation
