@@ -3,33 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{company.name}} | Make.com Opportunity</title>
+    <title>{{company.name}} | Make.com Sales Opportunity</title>
+    <meta name="description" content="{{company.description}}">
+    <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;text y='0.9em' font-size='90'&gt;🚀&lt;/text&gt;&lt;/svg&gt;">
+    
     <style>
         :root {
             --primary: #8B5CF6;
+            --primary-light: #A78BFA;
+            --primary-dark: #7C3AED;
             --success: #10B981;
             --warning: #F59E0B;
             --error: #EF4444;
+            --info: #3B82F6;
             --text-primary: #1F2937;
             --text-secondary: #6B7280;
             --text-tertiary: #9CA3AF;
             --bg-primary: #FFFFFF;
             --bg-secondary: #F9FAFB;
+            --bg-tertiary: #F3F4F6;
             --border: #E5E7EB;
-            --radius: 8px;
-            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            --border-light: #F3F4F6;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 0.15s ease;
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
                 --primary: #A78BFA;
+                --primary-light: #C4B5FD;
+                --primary-dark: #8B5CF6;
                 --text-primary: #F9FAFB;
                 --text-secondary: #D1D5DB;
                 --text-tertiary: #9CA3AF;
                 --bg-primary: #111827;
                 --bg-secondary: #1F2937;
+                --bg-tertiary: #374151;
                 --border: #374151;
-                --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+                --border-light: #4B5563;
+                --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+                --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+                --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
             }
         }
 
@@ -39,409 +58,1424 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', system-ui, sans-serif;
             line-height: 1.6;
             color: var(--text-primary);
             background: var(--bg-primary);
-            font-size: 14px;
+            font-size: 15px;
+            overflow-x: hidden;
         }
 
+        /* Layout */
         .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation */
+        .nav {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-light);
+            z-index: 100;
+            padding: 16px 0;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .nav {
+                background: rgba(17, 24, 39, 0.95);
+            }
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition-fast);
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            color: var(--primary);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 1px;
+        }
+
+        /* Header */
+        .hero {
+            padding: 48px 0;
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hero-content {
+            text-align: center;
             max-width: 800px;
             margin: 0 auto;
-            padding: 24px 16px;
-        }
-
-        .header {
-            margin-bottom: 32px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 24px;
         }
 
         .company-name {
-            font-size: 24px;
-            font-weight: 600;
+            font-size: 42px;
+            font-weight: 800;
             color: var(--text-primary);
-            margin-bottom: 4px;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
         }
 
-        .company-location {
+        .company-meta {
+            font-size: 18px;
             color: var(--text-secondary);
-            font-size: 14px;
+            margin-bottom: 16px;
         }
 
-        .status-grid {
+        .company-description {
+            font-size: 16px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+
+        /* Status Dashboard */
+        .status-dashboard {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 32px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin: 48px 0;
         }
 
         .status-card {
             background: var(--bg-secondary);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 16px;
+            padding: 24px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--primary);
+        }
+
+        .status-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
         .status-label {
             font-size: 12px;
-            font-weight: 500;
+            font-weight: 600;
             color: var(--text-tertiary);
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 4px;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
         }
 
         .status-value {
-            font-size: 16px;
-            font-weight: 600;
+            font-size: 18px;
+            font-weight: 700;
             color: var(--text-primary);
+            margin-bottom: 4px;
         }
 
-        .status-stage {
+        .status-meta {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .stage-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             background: var(--warning);
             color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 500;
-            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
         }
 
-        .status-stage.demo { background: var(--primary); }
-        .status-stage.technical { background: var(--primary); }
-        .status-stage.stalled { background: var(--warning); }
-        .status-stage.won { background: var(--success); }
-        .status-stage.lost { background: var(--error); }
+        .stage-demo { background: var(--primary); }
+        .stage-technical { background: var(--info); }
+        .stage-stalled { background: var(--warning); }
+        .stage-won { background: var(--success); }
+        .stage-lost { background: var(--error); }
 
-        .health-indicator {
-            width: 12px;
-            height: 12px;
+        .health-dot {
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             display: inline-block;
-            margin-left: 8px;
         }
 
         .health-green { background: var(--success); }
         .health-yellow { background: var(--warning); }
         .health-red { background: var(--error); }
 
+        /* Sections */
         .section {
+            margin: 64px 0;
+        }
+
+        .section-header {
             margin-bottom: 32px;
         }
 
         .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+
+        .section-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+        }
+
+        /* Collapsible Sections */
+        .collapsible {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .collapsible:hover {
+            box-shadow: var(--shadow);
+        }
+
+        .collapsible-header {
+            background: var(--bg-secondary);
+            padding: 20px 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            transition: var(--transition-fast);
+        }
+
+        .collapsible-header:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .collapsible-title {
             font-size: 18px;
             font-weight: 600;
             color: var(--text-primary);
-            margin-bottom: 16px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 8px;
         }
 
-        .use-case {
-            background: var(--bg-secondary);
-            border-left: 4px solid var(--primary);
-            padding: 16px;
-            border-radius: 0 var(--radius) var(--radius) 0;
-            margin-bottom: 16px;
+        .collapsible-icon {
+            font-size: 20px;
+            color: var(--text-secondary);
+            transition: var(--transition-fast);
         }
 
-        .contacts-grid {
+        .collapsible.expanded .collapsible-icon {
+            transform: rotate(180deg);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .collapsible.expanded .collapsible-content {
+            max-height: 2000px;
+        }
+
+        .collapsible-body {
+            padding: 24px;
+            background: var(--bg-primary);
+        }
+
+        /* Cards and Grids */
+        .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
         }
 
-        .contact-card {
+        .card {
             background: var(--bg-secondary);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 16px;
+            padding: 24px;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-header {
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .card-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .card-content {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Contact Cards */
+        .contact-card {
+            position: relative;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            transition: var(--transition);
+        }
+
+        .contact-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
         .contact-name {
+            font-size: 16px;
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: 4px;
         }
 
         .contact-role {
+            font-size: 14px;
             color: var(--text-secondary);
-            font-size: 13px;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
         }
 
         .contact-info {
+            font-size: 14px;
+        }
+
+        .contact-email {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .contact-email:hover {
+            text-decoration: underline;
+        }
+
+        .contact-phone {
+            color: var(--text-secondary);
+            margin-left: 8px;
+        }
+
+        .contact-notes {
             font-size: 13px;
             color: var(--text-secondary);
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid var(--border-light);
+            font-style: italic;
         }
 
-        .complexity-badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 500;
-            display: inline-block;
-        }
-
-        .complexity-low { background: #D1FAE5; color: #065F46; }
-        .complexity-medium { background: #FEF3C7; color: #92400E; }
-        .complexity-high { background: #FEE2E2; color: #991B1B; }
-
-        .systems-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 12px;
-            margin: 16px 0;
-        }
-
-        .system-item {
+        /* Technical Architecture */
+        .architecture-diagram {
             background: var(--bg-secondary);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 12px;
+            padding: 24px;
+            margin: 24px 0;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
             font-size: 13px;
+            overflow-x: auto;
+        }
+
+        .systems-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .system-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            transition: var(--transition-fast);
+        }
+
+        .system-card:hover {
+            box-shadow: var(--shadow);
         }
 
         .system-name {
+            font-size: 16px;
             font-weight: 600;
             color: var(--text-primary);
+            margin-bottom: 4px;
         }
 
         .system-type {
-            color: var(--text-secondary);
             font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
         }
 
-        .challenges-list {
+        .system-details {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Badges and Pills */
+        .complexity-badge {
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .complexity-low { background: rgba(16, 185, 129, 0.1); color: #059669; }
+        .complexity-medium { background: rgba(245, 158, 11, 0.1); color: #D97706; }
+        .complexity-high { background: rgba(239, 68, 68, 0.1); color: #DC2626; }
+
+        /* Lists */
+        .feature-list {
             list-style: none;
             margin: 16px 0;
         }
 
-        .challenges-list li {
-            background: var(--bg-secondary);
-            border-left: 3px solid var(--error);
-            padding: 12px 16px;
-            margin-bottom: 8px;
-            border-radius: 0 var(--radius) var(--radius) 0;
-            font-size: 13px;
-        }
-
-        .timeline {
-            margin: 16px 0;
-        }
-
-        .milestone {
+        .feature-list li {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
+            gap: 12px;
             padding: 12px 0;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid var(--border-light);
         }
 
-        .milestone:last-child {
+        .feature-list li:last-child {
             border-bottom: none;
         }
 
-        .milestone-date {
-            font-size: 12px;
-            color: var(--text-secondary);
-            width: 80px;
-            flex-shrink: 0;
+        .feature-icon {
+            color: var(--primary);
+            font-size: 16px;
+            margin-top: 2px;
         }
 
-        .milestone-event {
-            flex: 1;
-            font-size: 13px;
-            color: var(--text-primary);
-        }
-
-        .milestone-status {
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 500;
-        }
-
-        .milestone-completed { background: #D1FAE5; color: #065F46; }
-        .milestone-upcoming { background: #DBEAFE; color: #1E40AF; }
-        .milestone-overdue { background: #FEE2E2; color: #991B1B; }
-
-        .risks-list {
+        .challenge-list {
+            list-style: none;
             margin: 16px 0;
+        }
+
+        .challenge-item {
+            background: rgba(239, 68, 68, 0.05);
+            border-left: 3px solid var(--error);
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            margin: 24px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 16px 0 16px 60px;
+            margin-bottom: 16px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 14px;
+            top: 20px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 2px solid var(--bg-primary);
+        }
+
+        .timeline-date {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        .timeline-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .timeline-details {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .timeline-status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-completed { background: rgba(16, 185, 129, 0.1); color: #059669; }
+        .status-upcoming { background: rgba(59, 130, 246, 0.1); color: #2563EB; }
+        .status-overdue { background: rgba(239, 68, 68, 0.1); color: #DC2626; }
+
+        /* Risk Assessment */
+        .risk-grid {
+            display: grid;
+            gap: 16px;
+            margin: 24px 0;
         }
 
         .risk-item {
             background: var(--bg-secondary);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 16px;
+            padding: 20px;
+            transition: var(--transition-fast);
+        }
+
+        .risk-item:hover {
+            box-shadow: var(--shadow);
+        }
+
+        .risk-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
             margin-bottom: 12px;
         }
 
         .risk-description {
+            font-size: 15px;
             font-weight: 500;
             color: var(--text-primary);
-            margin-bottom: 8px;
-        }
-
-        .risk-mitigation {
-            font-size: 13px;
-            color: var(--text-secondary);
+            flex: 1;
+            margin-right: 16px;
         }
 
         .risk-impact {
-            padding: 2px 6px;
-            border-radius: 4px;
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
             font-size: 11px;
-            font-weight: 500;
-            margin-left: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        .impact-low { background: #D1FAE5; color: #065F46; }
-        .impact-medium { background: #FEF3C7; color: #92400E; }
-        .impact-high { background: #FEE2E2; color: #991B1B; }
+        .impact-low { background: rgba(16, 185, 129, 0.1); color: #059669; }
+        .impact-medium { background: rgba(245, 158, 11, 0.1); color: #D97706; }
+        .impact-high { background: rgba(239, 68, 68, 0.1); color: #DC2626; }
 
-        .generated-info {
-            margin-top: 48px;
-            padding-top: 24px;
+        .risk-mitigation {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Pricing */
+        .pricing-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: var(--radius);
+            padding: 32px;
+            text-align: center;
+            margin: 24px 0;
+        }
+
+        .pricing-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .pricing-subtitle {
+            opacity: 0.9;
+            margin-bottom: 24px;
+        }
+
+        .pricing-amount {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .pricing-period {
+            opacity: 0.8;
+            margin-bottom: 24px;
+        }
+
+        .pricing-features {
+            list-style: none;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Call Notes */
+        .note-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .note-meta {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .note-type {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+
+        .note-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        .recording-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        .recording-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Action Items */
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin: 32px 0;
+        }
+
+        .action-card {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+        }
+
+        .action-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+
+        .action-list {
+            list-style: none;
+        }
+
+        .action-list li {
+            padding: 8px 0;
+            font-size: 14px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .action-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 80px;
+            padding: 32px 0;
             border-top: 1px solid var(--border);
             text-align: center;
             color: var(--text-tertiary);
-            font-size: 12px;
+            font-size: 14px;
         }
 
-        @media (max-width: 640px) {
+        .footer-brand {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
             .container {
-                padding: 16px 12px;
+                padding: 0 16px;
             }
             
-            .status-grid,
-            .contacts-grid,
-            .systems-list {
+            .company-name {
+                font-size: 32px;
+            }
+            
+            .section-title {
+                font-size: 24px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .status-dashboard,
+            .card-grid,
+            .systems-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .collapsible-header {
+                padding: 16px 20px;
+            }
+            
+            .collapsible-body {
+                padding: 20px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Print Styles */
+        @media print {
+            .nav,
+            .collapsible-icon {
+                display: none;
+            }
+            
+            .collapsible-content {
+                max-height: none !important;
+            }
+            
+            .section {
+                break-inside: avoid;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <h1 class="company-name">{{company.name}}</h1>
-            <p class="company-location">{{company.location}} • {{company.industry}}</p>
-        </header>
-
-        <div class="status-grid">
-            <div class="status-card">
-                <div class="status-label">Stage</div>
-                <div class="status-value">
-                    <span class="status-stage {{status.stage}}">{{status.stage}}</span>
-                    <span class="health-indicator health-{{status.health}}"></span>
-                </div>
+    <nav class="nav">
+        <div class="container">
+            <div class="nav-content">
+                <div class="nav-brand">{{company.name}} Opportunity</div>
+                <ul class="nav-links">
+                    <li><a href="#overview" class="nav-link">Overview</a></li>
+                    <li><a href="#contacts" class="nav-link">Contacts</a></li>
+                    <li><a href="#technical" class="nav-link">Technical</a></li>
+                    <li><a href="#timeline" class="nav-link">Timeline</a></li>
+                    <li><a href="#risks" class="nav-link">Risks</a></li>
+                </ul>
             </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container">
+            <div class="hero-content animate-in">
+                <h1 class="company-name">{{company.name}}</h1>
+                <div class="company-meta">{{company.location}} • {{company.industry}}</div>
+                {{#company.description}}
+                <p class="company-description">{{company.description}}</p>
+                {{/company.description}}
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Status Dashboard -->
+        <section class="status-dashboard animate-in">
+            <div class="status-card">
+                <div class="status-label">Current Stage</div>
+                <div class="status-value">
+                    <span class="stage-badge stage-{{status.stage}}">
+                        <span class="health-dot health-{{status.health}}"></span>
+                        {{status.stage}}
+                    </span>
+                </div>
+                <div class="status-meta">{{status.currentPhase}}</div>
+            </div>
+            
             <div class="status-card">
                 <div class="status-label">Last Activity</div>
                 <div class="status-value">{{status.lastActivity}}</div>
+                <div class="status-meta">{{status.salesCycle}}</div>
             </div>
+            
             <div class="status-card">
                 <div class="status-label">Next Action</div>
                 <div class="status-value">{{status.nextAction}}</div>
+                <div class="status-meta">Critical for momentum</div>
             </div>
+
+            {{#overview.value}}
+            <div class="status-card">
+                <div class="status-label">Opportunity Value</div>
+                <div class="status-value">{{overview.value}}</div>
+                <div class="status-meta">Multi-year potential</div>
+            </div>
+            {{/overview.value}}
+        </section>
+
+        <!-- Overview Section -->
+        <section id="overview" class="section">
+            <div class="section-header">
+                <h2 class="section-title">Business Overview</h2>
+                <p class="section-subtitle">Understanding the opportunity and business drivers</p>
+            </div>
+
+            <div class="collapsible expanded">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <h3 class="collapsible-title">Use Case & Solution</h3>
+                    <span class="collapsible-icon">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-body">
+                        <div style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; padding: 24px; border-radius: var(--radius); margin-bottom: 24px;">
+                            <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 12px;">{{overview.useCase}}</h4>
+                            <p style="opacity: 0.9;">{{overview.solution}}</p>
+                        </div>
+                        
+                        {{#overview.businessDrivers}}
+                        <h4 style="margin-bottom: 16px; color: var(--text-primary);">Business Drivers</h4>
+                        <ul class="feature-list">
+                            {{#overview.businessDrivers}}
+                            <li>
+                                <span class="feature-icon">✓</span>
+                                <span>{{.}}</span>
+                            </li>
+                            {{/overview.businessDrivers}}
+                        </ul>
+                        {{/overview.businessDrivers}}
+
+                        <div style="margin-top: 24px; padding: 20px; background: var(--bg-secondary); border-radius: var(--radius-sm);">
+                            <h4 style="margin-bottom: 8px; color: var(--text-primary);">Current Pain Points</h4>
+                            <p style="color: var(--text-secondary);">{{overview.pain}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contacts Section -->
+        <section id="contacts" class="section">
+            <div class="section-header">
+                <h2 class="section-title">Key Stakeholders</h2>
+                <p class="section-subtitle">Decision makers and technical contacts</p>
+            </div>
+
+            <div class="collapsible expanded">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <h3 class="collapsible-title">Customer Team</h3>
+                    <span class="collapsible-icon">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-body">
+                        <div class="card-grid">
+                            <!-- Primary Contact -->
+                            <div class="contact-card" style="border-left: 4px solid var(--primary);">
+                                <div class="contact-name">{{contacts.primary.name}} ⭐</div>
+                                <div class="contact-role">{{contacts.primary.role}}</div>
+                                <div class="contact-info">
+                                    <a href="mailto:{{contacts.primary.email}}" class="contact-email">{{contacts.primary.email}}</a>
+                                    {{#contacts.primary.phone}}
+                                    <span class="contact-phone">{{contacts.primary.phone}}</span>
+                                    {{/contacts.primary.phone}}
+                                </div>
+                                {{#contacts.primary.notes}}
+                                <div class="contact-notes">{{contacts.primary.notes}}</div>
+                                {{/contacts.primary.notes}}
+                            </div>
+
+                            <!-- Technical Contacts -->
+                            {{#contacts.technical}}
+                            <div class="contact-card">
+                                <div class="contact-name">{{name}}</div>
+                                <div class="contact-role">{{role}}</div>
+                                <div class="contact-info">
+                                    {{#email}}
+                                    <a href="mailto:{{email}}" class="contact-email">{{email}}</a>
+                                    {{/email}}
+                                    {{#phone}}
+                                    <span class="contact-phone">{{phone}}</span>
+                                    {{/phone}}
+                                </div>
+                                {{#notes}}
+                                <div class="contact-notes">{{notes}}</div>
+                                {{/notes}}
+                            </div>
+                            {{/contacts.technical}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{#contacts.makeTeam}}
+            <div class="collapsible">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <h3 class="collapsible-title">Make.com Team</h3>
+                    <span class="collapsible-icon">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-body">
+                        <div class="card-grid">
+                            {{#contacts.makeTeam}}
+                            <div class="contact-card">
+                                <div class="contact-name">{{name}}</div>
+                                <div class="contact-role">{{role}}</div>
+                                <div class="contact-info">
+                                    <a href="mailto:{{email}}" class="contact-email">{{email}}</a>
+                                </div>
+                                {{#notes}}
+                                <div class="contact-notes">{{notes}}</div>
+                                {{/notes}}
+                            </div>
+                            {{/contacts.makeTeam}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{/contacts.makeTeam}}
+        </section>
+
+        <!-- Technical Section -->
+        <section id="technical" class="section">
+            <div class="section-header">
+                <h2 class="section-title">Technical Architecture</h2>
+                <p class="section-subtitle">Integration approach and system requirements</p>
+            </div>
+
+            <div class="collapsible expanded">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <h3 class="collapsible-title">Architecture Overview</h3>
+                    <span class="collapsible-icon">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-body">
+                        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+                            <span style="font-weight: 600;">Complexity:</span>
+                            <span class="complexity-badge complexity-{{technical.complexity}}">{{technical.complexity}}</span>
+                        </div>
+
+                        {{#technical.architecture}}
+                        <div class="architecture-diagram">
+                            <h4 style="margin-bottom: 12px; color: var(--text-primary);">Data Flow</h4>
+                            <div>{{technical.architecture.dataFlow}}</div>
+                        </div>
+
+                        <h4 style="margin: 24px 0 16px 0; color: var(--text-primary);">Integration Components</h4>
+                        <ul class="feature-list">
+                            {{#technical.architecture.components}}
+                            <li>
+                                <span class="feature-icon">🔧</span>
+                                <span>{{.}}</span>
+                            </li>
+                            {{/technical.architecture.components}}
+                        </ul>
+                        {{/technical.architecture}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapsible">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <h3 class="collapsible-title">Systems Integration</h3>
+                    <span class="collapsible-icon">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-body">
+                        <div class="systems-grid">
+                            {{#technical.systems}}
+                            <div class="system-card">
+                                <div class="system-name">{{name}}</div>
+                                <div class="system-type">{{type}} • {{deployment}}</div>
+                                <div class="system-details">{{details}}</div>
+                            </div>
+                            {{/technical.systems}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapsible">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <h3 class="collapsible-title">Technical Challenges</h3>
+                    <span class="collapsible-icon">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-body">
+                        <div class="challenge-list">
+                            {{#technical.challenges}}
+                            <div class="challenge-item">{{.}}</div>
+                            {{/technical.challenges}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{#technical.developmentApproach}}
+            <div class="collapsible">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <h3 class="collapsible-title">Development Approach</h3>
+                    <span class="collapsible-icon">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-body">
+                        <div class="card-grid">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">Technology Stack</div>
+                                </div>
+                                <div class="card-content">
+                                    <p><strong>Platform:</strong> {{technical.developmentApproach.preferredTechnology}}</p>
+                                    <p><strong>SDK License:</strong> {{technical.developmentApproach.sdkLicense}}</p>
+                                    <p><strong>Programming Model:</strong> {{technical.developmentApproach.programmingModel}}</p>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">Integration Pattern</div>
+                                </div>
+                                <div class="card-content">
+                                    <p><strong>API Pattern:</strong> {{technical.developmentApproach.apiPattern}}</p>
+                                    <p><strong>Data Format:</strong> {{technical.developmentApproach.dataFormat}}</p>
+                                    <p><strong>Security:</strong> {{technical.developmentApproach.securityModel}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{/technical.developmentApproach}}
+        </section>
+
+        <!-- Timeline Section -->
+        <section id="timeline" class="section">
+            <div class="section-header">
+                <h2 class="section-title">Project Timeline</h2>
+                <p class="section-subtitle">Milestones and implementation schedule</p>
+            </div>
+
+            <div class="collapsible expanded">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <h3 class="collapsible-title">Sales Milestones</h3>
+                    <span class="collapsible-icon">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-body">
+                        <div class="timeline">
+                            {{#timeline.milestones}}
+                            <div class="timeline-item">
+                                <div class="timeline-date">{{date}}</div>
+                                <div class="timeline-title">{{event}}</div>
+                                {{#details}}
+                                <div class="timeline-details">{{details}}</div>
+                                {{/details}}
+                                <span class="timeline-status status-{{status}}">{{status}}</span>
+                            </div>
+                            {{/timeline.milestones}}
+                        </div>
+
+                        {{#timeline.expectedClose}}
+                        <div style="margin-top: 24px; padding: 16px; background: var(--bg-secondary); border-radius: var(--radius-sm);">
+                            <strong>Expected Close:</strong> {{timeline.expectedClose}}
+                        </div>
+                        {{/timeline.expectedClose}}
+                    </div>
+                </div>
+            </div>
+
+            {{#timeline.implementationTimeline}}
+            <div class="collapsible">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <h3 class="collapsible-title">Implementation Timeline</h3>
+                    <span class="collapsible-icon">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-body">
+                        <div class="card-grid">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">Custom SDK Development</div>
+                                    <div class="card-subtitle">Full integration approach</div>
+                                </div>
+                                <div class="card-content">
+                                    <p><strong>Timeline:</strong> {{timeline.implementationTimeline.customSDK}}</p>
+                                    <p>Includes planning, development, and testing phases</p>
+                                </div>
+                            </div>
+
+                            {{#timeline.implementationTimeline.cloudMigration}}
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">Cloud Migration Alternative</div>
+                                    <div class="card-subtitle">Faster time-to-value</div>
+                                </div>
+                                <div class="card-content">
+                                    <p><strong>Timeline:</strong> {{timeline.implementationTimeline.cloudMigration}}</p>
+                                    <p>Migration plus standard API integration</p>
+                                </div>
+                            </div>
+                            {{/timeline.implementationTimeline.cloudMigration}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{/timeline.implementationTimeline}}
+        </section>
+
+        <!-- Risks Section -->
+        <section id="risks" class="section">
+            <div class="section-header">
+                <h2 class="section-title">Risk Assessment</h2>
+                <p class="section-subtitle">Potential blockers and mitigation strategies</p>
+            </div>
+
+            <div class="collapsible expanded">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <h3 class="collapsible-title">Risk Analysis</h3>
+                    <span class="collapsible-icon">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-body">
+                        <div class="risk-grid">
+                            {{#risks}}
+                            <div class="risk-item">
+                                <div class="risk-header">
+                                    <div class="risk-description">{{description}}</div>
+                                    <div class="risk-impact impact-{{impact}}">{{impact}} impact</div>
+                                </div>
+                                <div class="risk-mitigation"><strong>Mitigation:</strong> {{mitigation}}</div>
+                            </div>
+                            {{/risks}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        {{#pricing}}
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Investment & ROI</h2>
+                <p class="section-subtitle">Pricing structure and expansion opportunities</p>
+            </div>
+
+            <div class="collapsible">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <h3 class="collapsible-title">Current Proposal</h3>
+                    <span class="collapsible-icon">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-body">
+                        <div class="pricing-card">
+                            <div class="pricing-title">{{pricing.currentProposal.totalYear1}}</div>
+                            <div class="pricing-subtitle">Year 1 Investment</div>
+                            <div style="margin-top: 20px; text-align: left;">
+                                <p>Platform Fee: {{pricing.currentProposal.platformFee}}</p>
+                                <p>Operations: {{pricing.currentProposal.operationsCost}}</p>
+                                <p>Implementation: {{pricing.currentProposal.implementation}}</p>
+                                <p style="margin-top: 12px; font-size: 14px; opacity: 0.9;">
+                                    Recurring: {{pricing.currentProposal.annualRecurring}} annually
+                                </p>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 16px; padding: 16px; background: var(--bg-secondary); border-radius: var(--radius-sm); font-size: 14px;">
+                            <strong>Operations Example:</strong> {{pricing.currentProposal.operationsExample}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{#pricing.expansionOpportunity}}
+            <div class="collapsible">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <h3 class="collapsible-title">Expansion Opportunity</h3>
+                    <span class="collapsible-icon">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-body">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">Mexico Phase 2</div>
+                                <div class="card-subtitle">Additional revenue potential</div>
+                            </div>
+                            <div class="card-content">
+                                <p><strong>Additional Value:</strong> {{pricing.expansionOpportunity.mexicoPhase2}}</p>
+                                <p><strong>Total Engagement:</strong> {{pricing.expansionOpportunity.totalMultiYear}}</p>
+                                <p style="margin-top: 12px; font-size: 14px; color: var(--text-secondary);">
+                                    {{pricing.expansionOpportunity.note}}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{/pricing.expansionOpportunity}}
+        </section>
+        {{/pricing}}
+
+        <!-- Call Notes Section -->
+        {{#notes}}
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Call Intelligence</h2>
+                <p class="section-subtitle">Meeting notes and key insights</p>
+            </div>
+
+            <div class="collapsible">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <h3 class="collapsible-title">Call History</h3>
+                    <span class="collapsible-icon">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-body">
+                        {{#notes}}
+                        <div class="note-item">
+                            <div class="note-header">
+                                <div class="note-meta">{{date}} • {{author}}</div>
+                                <span class="note-type">{{type}}</span>
+                            </div>
+                            <div class="note-content">{{content}}</div>
+                            {{#recording}}
+                            <div style="margin-top: 12px;">
+                                <a href="#" class="recording-link">🎥 {{recording}}</a>
+                            </div>
+                            {{/recording}}
+                        </div>
+                        {{/notes}}
+                    </div>
+                </div>
+            </div>
+        </section>
+        {{/notes}}
+
+        <!-- Action Items -->
+        {{#callToAction}}
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Next Steps</h2>
+                <p class="section-subtitle">Critical actions and success metrics</p>
+            </div>
+
+            <div class="action-grid">
+                <div class="action-card">
+                    <div class="action-title">Immediate Actions</div>
+                    <div style="margin-bottom: 16px; padding: 12px; background: var(--primary); color: white; border-radius: var(--radius-sm); font-weight: 500;">
+                        {{callToAction.immediateNext}}
+                    </div>
+                </div>
+
+                <div class="action-card">
+                    <div class="action-title">Critical Questions</div>
+                    <ul class="action-list">
+                        {{#callToAction.criticalQuestions}}
+                        <li>{{.}}</li>
+                        {{/callToAction.criticalQuestions}}
+                    </ul>
+                </div>
+
+                <div class="action-card">
+                    <div class="action-title">Success Metrics</div>
+                    <ul class="action-list">
+                        {{#callToAction.successMetrics}}
+                        <li>{{.}}</li>
+                        {{/callToAction.successMetrics}}
+                    </ul>
+                </div>
+            </div>
+        </section>
+        {{/callToAction}}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Generated with <span class="footer-brand">Make.com Sales Portal</span> • Last updated: {{lastUpdated}}</p>
+            <p style="margin-top: 8px; font-size: 12px;">Opportunity ID: {{opportunityId}}</p>
         </div>
+    </footer>
 
-        <section class="section">
-            <h2 class="section-title">Overview</h2>
-            <div class="use-case">
-                <strong>Use Case:</strong> {{overview.useCase}}
-            </div>
-            <p><strong>Value:</strong> {{overview.value}}</p>
-            <p><strong>Solution:</strong> {{overview.solution}}</p>
-        </section>
-
-        <section class="section">
-            <h2 class="section-title">Key Contacts</h2>
-            <div class="contacts-grid">
-                <div class="contact-card">
-                    <div class="contact-name">{{contacts.primary.name}}</div>
-                    <div class="contact-role">{{contacts.primary.role}}</div>
-                    <div class="contact-info">
-                        {{contacts.primary.email}}<br>
-                        {{contacts.primary.phone}}
-                    </div>
-                </div>
-                {{#contacts.technical}}
-                <div class="contact-card">
-                    <div class="contact-name">{{name}}</div>
-                    <div class="contact-role">{{role}}</div>
-                    <div class="contact-info">
-                        {{email}}<br>
-                        {{phone}}
-                    </div>
-                </div>
-                {{/contacts.technical}}
-            </div>
-        </section>
-
-        <section class="section">
-            <h2 class="section-title">Technical Landscape</h2>
-            <p>
-                <strong>Complexity:</strong> 
-                <span class="complexity-badge complexity-{{technical.complexity}}">{{technical.complexity}}</span>
-            </p>
+    <script>
+        // Navigation scroll spy
+        function updateActiveNav() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-link');
             
-            <div class="systems-list">
-                {{#technical.systems}}
-                <div class="system-item">
-                    <div class="system-name">{{name}}</div>
-                    <div class="system-type">{{type}} • {{deployment}}</div>
-                </div>
-                {{/technical.systems}}
-            </div>
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (scrollY >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        }
 
-            {{#technical.challenges}}
-            <h3 style="margin: 24px 0 12px 0; font-size: 16px; color: var(--text-primary);">Key Challenges</h3>
-            <ul class="challenges-list">
-                {{#technical.challenges}}
-                <li>{{.}}</li>
-                {{/technical.challenges}}
-            </ul>
-            {{/technical.challenges}}
-        </section>
+        // Collapsible functionality
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
 
-        <section class="section">
-            <h2 class="section-title">Timeline</h2>
-            <div class="timeline">
-                {{#timeline.milestones}}
-                <div class="milestone">
-                    <div class="milestone-date">{{date}}</div>
-                    <div class="milestone-event">{{event}}</div>
-                    <span class="milestone-status milestone-{{status}}">{{status}}</span>
-                </div>
-                {{/timeline.milestones}}
-            </div>
-        </section>
+        // Smooth scroll for navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(link.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
 
-        <section class="section">
-            <h2 class="section-title">Risk Assessment</h2>
-            <div class="risks-list">
-                {{#risks}}
-                <div class="risk-item">
-                    <div class="risk-description">
-                        {{description}}
-                        <span class="risk-impact impact-{{impact}}">{{impact}} impact</span>
-                    </div>
-                    <div class="risk-mitigation"><strong>Mitigation:</strong> {{mitigation}}</div>
-                </div>
-                {{/risks}}
-            </div>
-        </section>
+        // Initialize
+        window.addEventListener('scroll', updateActiveNav);
+        window.addEventListener('load', updateActiveNav);
 
-        <div class="generated-info">
-            Generated with Make.com Sales Portal • Last updated: {{lastUpdated}}<br>
-            Opportunity ID: {{opportunityId}}
-        </div>
-    </div>
+        // Animate in elements on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
 </body>
 </html>
