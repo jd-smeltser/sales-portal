@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make.com Sales Portal</title>
+    <meta name="description" content="Share sales opportunities with compressed data URLs">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🚀</text></svg>">
+    
+    <style>
+        /* Design System */
+        :root {
+            --primary: #8B5CF6;
+            --primary-hover: #7C3AED;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --text-tertiary: #9CA3AF;
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F9FAFB;
+            --bg-tertiary: #F3F4F6;
+            --border: #E5E7EB;
+            --radius: 8px;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --transition: all 0.15s ease;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary: #A78BFA;
+                --primary-hover: #8B5CF6;
+                --text-primary: #F9FAFB;
+                --text-secondary: #D1D5DB;
+                --text-tertiary: #9CA3AF;
+                --bg-primary: #111827;
+                --bg-secondary: #1F2937;
+                --bg-tertiary: #374151;
+                --border: #374151;
+            }
+        }
+
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            min-height: 100vh;
+        }
+
+        /* Layout */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .tagline {
+            color: var(--text-secondary);
+        }
+
+        /* Components */
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: var(--transition);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover:not(:disabled) {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--border);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            font-size: 0.875rem;
+            resize: vertical;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: var(--transition);
+        }
+
+        .textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+
+        /* Drop Zone */
+        .drop-zone {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 3rem 1.5rem;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .drop-zone:hover,
+        .drop-zone.drag-over {
+            border-color: var(--primary);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .drop-zone-text {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .drop-zone-hint {
+            color: var(--text-tertiary);
+            font-size: 0.875rem;
+        }
+
+        /* Progress */
+        .progress {
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 1rem 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .progress.show {
+            opacity: 1;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Output */
+        .output {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1rem;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            font-size: 0.75rem;
+            word-break: break-all;
+            margin: 1rem 0;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Opportunity Display */
+        .opportunity {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .opportunity-header {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .opportunity-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .opportunity-meta {
+            color: var(--text-secondary);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+        }
+
+        .status-stalled {
+            background: rgba(245, 158, 11, 0.1);
+            color: #D97706;
+        }
+
+        .status-active {
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .contact-card {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: var(--radius);
+        }
+
+        .contact-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .contact-role {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-info {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Loading State */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Utilities */
+        .hidden {
+            display: none !important;
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        /* View Transitions */
+        @view-transition {
+            navigation: auto;
+        }
+
+        ::view-transition-old(root) {
+            animation: fade-out 0.3s ease-out;
+        }
+
+        ::view-transition-new(root) {
+            animation: fade-in 0.3s ease-out;
+        }
+
+        @keyframes fade-out {
+            to { opacity: 0; }
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">Make.com Sales Portal</div>
+            <p class="tagline">Share sales opportunities with compressed data URLs</p>
+        </header>
+
+        <main id="app">
+            <!-- Content will be rendered here -->
+        </main>
+    </div>
+
+    <script type="module">
+        // Modern Sales Portal with Edge Technologies
+        class SalesPortal {
+            constructor() {
+                this.currentView = null;
+                this.opportunityData = null;
+                this.init();
+            }
+
+            async init() {
+                // Check for compression support
+                if (!('CompressionStream' in window)) {
+                    this.showError('Your browser doesn\'t support modern compression. Please use Chrome, Edge, or Safari.');
+                    return;
+                }
+
+                // Route based on URL
+                if (location.hash && location.hash.length > 2) {
+                    await this.loadOpportunity();
+                } else {
+                    this.showGenerator();
+                }
+
+                // Handle navigation
+                window.addEventListener('hashchange', () => this.handleRoute());
+            }
+
+            async handleRoute() {
+                if (location.hash && location.hash.length > 2) {
+                    await this.loadOpportunity();
+                } else {
+                    this.showGenerator();
+                }
+            }
+
+            showGenerator() {
+                const app = document.getElementById('app');
+                app.innerHTML = `
+                    <div class="card">
+                        <h2 class="section-title">Create Opportunity Portal</h2>
+                        
+                        <div class="form-group">
+                            <label class="label">Upload Opportunity Data</label>
+                            <div class="drop-zone" id="dropZone">
+                                <div class="drop-zone-text">Drop your JSON file here</div>
+                                <div class="drop-zone-hint">or click to browse</div>
+                            </div>
+                            <input type="file" id="fileInput" accept=".json" style="display: none;">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label">Or Paste JSON Data</label>
+                            <textarea class="textarea" id="jsonInput" placeholder="Paste your opportunity JSON data here..."></textarea>
+                            <div class="error-message hidden" id="jsonError"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <button class="btn" id="generateBtn" disabled>
+                                <span>🚀</span>
+                                Generate Portal URL
+                            </button>
+                            <button class="btn btn-secondary" id="sampleBtn">
+                                <span>📝</span>
+                                Load Sample
+                            </button>
+                        </div>
+
+                        <div class="progress" id="progress">
+                            <div class="progress-bar" id="progressBar"></div>
+                        </div>
+                    </div>
+
+                    <div class="card hidden" id="outputCard">
+                        <h3 class="section-title">Generated Portal</h3>
+                        
+                        <div class="stats">
+                            <div class="stat">
+                                <div class="stat-value" id="compressionRatio">-</div>
+                                <div class="stat-label">Compression</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value" id="urlSize">-</div>
+                                <div class="stat-label">URL Size</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value" id="shareability">-</div>
+                                <div class="stat-label">Shareability</div>
+                            </div>
+                        </div>
+
+                        <div class="output" id="urlOutput"></div>
+
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <button class="btn btn-secondary" id="copyBtn">
+                                <span>📋</span>
+                                Copy URL
+                            </button>
+                            <button class="btn btn-secondary" id="shareBtn">
+                                <span>🔗</span>
+                                Share
+                            </button>
+                            <button class="btn btn-secondary" id="qrBtn">
+                                <span>📱</span>
+                                QR Code
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                this.bindGeneratorEvents();
+            }
+
+            bindGeneratorEvents() {
+                const dropZone = document.getElementById('dropZone');
+                const fileInput = document.getElementById('fileInput');
+                const jsonInput = document.getElementById('jsonInput');
+                const generateBtn = document.getElementById('generateBtn');
+                const sampleBtn = document.getElementById('sampleBtn');
+
+                // File handling
+                dropZone.addEventListener('click', () => fileInput.click());
+                dropZone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    dropZone.classList.add('drag-over');
+                });
+                dropZone.addEventListener('dragleave', () => {
+                    dropZone.classList.remove('drag-over');
+                });
+                dropZone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropZone.classList.remove('drag-over');
+                    const file = e.dataTransfer.files[0];
+                    if (file) this.processFile(file);
+                });
+
+                fileInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) this.processFile(file);
+                });
+
+                // JSON validation
+                jsonInput.addEventListener('input', () => this.validateJSON());
+
+                // Actions
+                generateBtn.addEventListener('click', () => this.generateURL());
+                sampleBtn.addEventListener('click', () => this.loadSample());
+
+                // Output actions
+                document.addEventListener('click', (e) => {
+                    if (e.target.id === 'copyBtn') this.copyURL();
+                    if (e.target.id === 'shareBtn') this.shareURL();
+                    if (e.target.id === 'qrBtn') this.generateQR();
+                });
+            }
+
+            async processFile(file) {
+                if (!file.name.endsWith('.json')) {
+                    this.showError('Please select a JSON file');
+                    return;
+                }
+
+                const text = await file.text();
+                document.getElementById('jsonInput').value = text;
+                this.validateJSON();
+            }
+
+            validateJSON() {
+                const jsonInput = document.getElementById('jsonInput');
+                const generateBtn = document.getElementById('generateBtn');
+                const errorEl = document.getElementById('jsonError');
+
+                try {
+                    const data = JSON.parse(jsonInput.value);
+                    generateBtn.disabled = false;
+                    errorEl.classList.add('hidden');
+                    return true;
+                } catch (e) {
+                    generateBtn.disabled = true;
+                    if (jsonInput.value.trim()) {
+                        errorEl.textContent = 'Invalid JSON: ' + e.message;
+                        errorEl.classList.remove('hidden');
+                    }
+                    return false;
+                }
+            }
+
+            loadSample() {
+                const sampleData = {
+                    opportunityId: "rimas-2025-06",
+                    company: {
+                        name: "Rimas Music",
+                        location: "Puerto Rico (Spain office focus)",
+                        industry: "Music & Entertainment"
+                    },
+                    status: {
+                        stage: "stalled",
+                        health: "yellow",
+                        lastActivity: "2025-05-19",
+                        nextAction: "Eugenio site visit to identify blockers"
+                    },
+                    overview: {
+                        useCase: "Financial automation - QuickBooks journal entry synchronization",
+                        value: "Streamline multi-regional financial operations",
+                        solution: "Make.com Enterprise with On-Premise Agent"
+                    },
+                    contacts: {
+                        primary: {
+                            name: "Gustavo Rivera",
+                            role: "VP Finance & Accounting",
+                            email: "gustavor@rimasmusic.com"
+                        },
+                        technical: [{
+                            name: "Johan Vazquez-Alicea",
+                            role: "Technical Contact",
+                            email: "jvazquez@rimasmusic.com"
+                        }]
+                    }
+                };
+
+                document.getElementById('jsonInput').value = JSON.stringify(sampleData, null, 2);
+                this.validateJSON();
+            }
+
+            async generateURL() {
+                const progress = document.getElementById('progress');
+                const progressBar = document.getElementById('progressBar');
+                
+                progress.classList.add('show');
+                progressBar.style.width = '0%';
+
+                try {
+                    // Parse JSON
+                    const jsonInput = document.getElementById('jsonInput');
+                    const data = JSON.parse(jsonInput.value);
+                    progressBar.style.width = '20%';
+
+                    // Compress using native API
+                    const compressed = await this.compress(JSON.stringify(data));
+                    progressBar.style.width = '80%';
+
+                    // Generate URL
+                    const url = `${location.origin}${location.pathname}#/gz/${compressed}`;
+                    progressBar.style.width = '100%';
+
+                    // Display results
+                    this.showResults(url, data, compressed);
+
+                } catch (error) {
+                    this.showError('Failed to generate URL: ' + error.message);
+                } finally {
+                    setTimeout(() => {
+                        progress.classList.remove('show');
+                    }, 500);
+                }
+            }
+
+            async compress(text) {
+                const encoder = new TextEncoder();
+                const data = encoder.encode(text);
+                
+                // Create compression stream
+                const cs = new CompressionStream('gzip');
+                const writer = cs.writable.getWriter();
+                writer.write(data);
+                writer.close();
+                
+                // Read compressed data
+                const chunks = [];
+                const reader = cs.readable.getReader();
+                
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    chunks.push(value);
+                }
+                
+                // Combine chunks and convert to base64
+                const compressed = new Uint8Array(chunks.reduce((acc, chunk) => acc + chunk.length, 0));
+                let offset = 0;
+                for (const chunk of chunks) {
+                    compressed.set(chunk, offset);
+                    offset += chunk.length;
+                }
+                
+                return btoa(String.fromCharCode(...compressed))
+                    .replace(/\+/g, '-')
+                    .replace(/\//g, '_')
+                    .replace(/=+$/, '');
+            }
+
+            async decompress(base64) {
+                // Convert from URL-safe base64
+                const normalized = base64
+                    .replace(/-/g, '+')
+                    .replace(/_/g, '/')
+                    .padEnd(base64.length + (4 - base64.length % 4) % 4, '=');
+                
+                // Decode base64
+                const binaryString = atob(normalized);
+                const bytes = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
+                
+                // Decompress
+                const ds = new DecompressionStream('gzip');
+                const writer = ds.writable.getWriter();
+                writer.write(bytes);
+                writer.close();
+                
+                // Read decompressed data
+                const chunks = [];
+                const reader = ds.readable.getReader();
+                
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    chunks.push(value);
+                }
+                
+                // Decode text
+                const decoder = new TextDecoder();
+                return chunks.map(chunk => decoder.decode(chunk)).join('');
+            }
+
+            showResults(url, data, compressed) {
+                const outputCard = document.getElementById('outputCard');
+                const urlOutput = document.getElementById('urlOutput');
+                const compressionRatio = document.getElementById('compressionRatio');
+                const urlSize = document.getElementById('urlSize');
+                const shareability = document.getElementById('shareability');
+
+                // Calculate stats
+                const originalSize = JSON.stringify(data).length;
+                const compressedSize = compressed.length;
+                const ratio = ((1 - compressedSize / originalSize) * 100).toFixed(1);
+                const urlLength = url.length;
+
+                // Update display
+                urlOutput.textContent = url;
+                compressionRatio.textContent = `${ratio}%`;
+                urlSize.textContent = `${(urlLength / 1024).toFixed(1)}KB`;
+                
+                if (urlLength < 2000) {
+                    shareability.textContent = 'Excellent';
+                } else if (urlLength < 4000) {
+                    shareability.textContent = 'Good';
+                } else {
+                    shareability.textContent = 'Limited';
+                }
+
+                outputCard.classList.remove('hidden');
+                
+                // Store for sharing
+                this.generatedURL = url;
+            }
+
+            async copyURL() {
+                try {
+                    await navigator.clipboard.writeText(this.generatedURL);
+                    this.showToast('URL copied to clipboard!');
+                } catch (error) {
+                    this.showError('Failed to copy URL');
+                }
+            }
+
+            async shareURL() {
+                if (navigator.share) {
+                    try {
+                        await navigator.share({
+                            title: 'Sales Opportunity Portal',
+                            text: 'View this sales opportunity',
+                            url: this.generatedURL
+                        });
+                    } catch (error) {
+                        if (error.name !== 'AbortError') {
+                            this.showError('Failed to share');
+                        }
+                    }
+                } else {
+                    this.copyURL();
+                }
+            }
+
+            async generateQR() {
+                // For now, just open a QR generator service
+                const qrService = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(this.generatedURL)}`;
+                window.open(qrService, '_blank');
+            }
+
+            async loadOpportunity() {
+                const app = document.getElementById('app');
+                app.innerHTML = `
+                    <div class="loading show">
+                        <div class="spinner"></div>
+                        <p>Loading opportunity...</p>
+                    </div>
+                `;
+
+                try {
+                    // Parse URL
+                    const hash = location.hash.slice(1); // Remove #
+                    const parts = hash.split('/');
+                    
+                    if (parts.length < 2 || parts[0] !== '' || parts[1] !== 'gz') {
+                        throw new Error('Invalid URL format');
+                    }
+
+                    const compressed = parts.slice(2).join('/'); // Handle any / in base64
+                    const json = await this.decompress(compressed);
+                    const data = JSON.parse(json);
+
+                    this.displayOpportunity(data);
+
+                } catch (error) {
+                    app.innerHTML = `
+                        <div class="card">
+                            <h2>Error Loading Opportunity</h2>
+                            <p class="error-message">${error.message}</p>
+                            <br>
+                            <button class="btn" onclick="location.hash = ''">
+                                Create New Portal
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+
+            displayOpportunity(data) {
+                const app = document.getElementById('app');
+                
+                app.innerHTML = `
+                    <div class="opportunity">
+                        <div class="card">
+                            <div class="opportunity-header">
+                                <h1 class="opportunity-title">${this.escape(data.company.name)}</h1>
+                                <div class="opportunity-meta">
+                                    ${this.escape(data.company.location)} • ${this.escape(data.company.industry)}
+                                </div>
+                                <div style="margin-top: 1rem;">
+                                    <span class="status-badge status-${data.status.stage}">${this.escape(data.status.stage)}</span>
+                                    <span style="color: var(--text-secondary);">Last activity: ${this.escape(data.status.lastActivity)}</span>
+                                </div>
+                            </div>
+
+                            <div class="section">
+                                <h2 class="section-title">Overview</h2>
+                                <p><strong>Use Case:</strong> ${this.escape(data.overview.useCase)}</p>
+                                <p><strong>Value:</strong> ${this.escape(data.overview.value)}</p>
+                                <p><strong>Solution:</strong> ${this.escape(data.overview.solution)}</p>
+                                <p><strong>Next Action:</strong> ${this.escape(data.status.nextAction)}</p>
+                            </div>
+
+                            <div class="section">
+                                <h2 class="section-title">Key Contacts</h2>
+                                <div class="contact-grid">
+                                    <div class="contact-card">
+                                        <div class="contact-name">${this.escape(data.contacts.primary.name)}</div>
+                                        <div class="contact-role">${this.escape(data.contacts.primary.role)}</div>
+                                        <div class="contact-info">
+                                            <a href="mailto:${this.escape(data.contacts.primary.email)}">${this.escape(data.contacts.primary.email)}</a>
+                                        </div>
+                                    </div>
+                                    ${data.contacts.technical ? data.contacts.technical.map(contact => `
+                                        <div class="contact-card">
+                                            <div class="contact-name">${this.escape(contact.name)}</div>
+                                            <div class="contact-role">${this.escape(contact.role)}</div>
+                                            <div class="contact-info">
+                                                <a href="mailto:${this.escape(contact.email)}">${this.escape(contact.email)}</a>
+                                            </div>
+                                        </div>
+                                    `).join('') : ''}
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 3rem; text-align: center;">
+                                <button class="btn btn-secondary" onclick="location.hash = ''">
+                                    <span>➕</span>
+                                    Create New Portal
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            escape(str) {
+                const div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML;
+            }
+
+            showToast(message) {
+                // Simple toast notification
+                const toast = document.createElement('div');
+                toast.style.cssText = `
+                    position: fixed;
+                    bottom: 2rem;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: var(--bg-secondary);
+                    color: var(--text-primary);
+                    padding: 1rem 2rem;
+                    border-radius: var(--radius);
+                    box-shadow: var(--shadow-lg);
+                    z-index: 1000;
+                    animation: slideUp 0.3s ease;
+                `;
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                
+                setTimeout(() => toast.remove(), 3000);
+            }
+
+            showError(message) {
+                console.error(message);
+                this.showToast('❌ ' + message);
+            }
+        }
+
+        // Initialize the app
+        new SalesPortal();
+    </script>
+</body>
+</html>
