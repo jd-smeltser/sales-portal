@@ -6,6 +6,9 @@ opportunity-*.json
 sales-portal.html
 index.html
 
+# Project-specific instructions (keep local only)
+CLAUDE.md
+
 # OS generated files
 .DS_Store
 .DS_Store?
