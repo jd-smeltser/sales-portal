@@ -1349,12 +1349,29 @@
             }
 
             bindEvents() {
-                // Enhanced Event Delegation
-                document.addEventListener('click', this.handleClick.bind(this));
-                document.addEventListener('scroll', this.handleScroll.bind(this));
+                // Remove existing listeners first to avoid duplicates
+                this.unbindEvents();
                 
-                // Modern Pointer Events
-                document.addEventListener('pointerdown', this.handlePointerDown.bind(this));
+                // Enhanced Event Delegation
+                this.clickHandler = this.handleClick.bind(this);
+                this.scrollHandler = this.handleScroll.bind(this);
+                this.pointerHandler = this.handlePointerDown.bind(this);
+                
+                document.addEventListener('click', this.clickHandler);
+                document.addEventListener('scroll', this.scrollHandler);
+                document.addEventListener('pointerdown', this.pointerHandler);
+            }
+            
+            unbindEvents() {
+                if (this.clickHandler) {
+                    document.removeEventListener('click', this.clickHandler);
+                }
+                if (this.scrollHandler) {
+                    document.removeEventListener('scroll', this.scrollHandler);
+                }
+                if (this.pointerHandler) {
+                    document.removeEventListener('pointerdown', this.pointerHandler);
+                }
             }
 
             handleClick(e) {
@@ -1499,8 +1516,10 @@
 
         // Global Functions for Template Compatibility
         function toggleCollapsible(header) {
-            const event = new CustomEvent('click', { bubbles: true });
-            header.dispatchEvent(event);
+            // Avoid infinite recursion by directly calling the portal's handleClick
+            const portal = document.querySelector('opportunity-portal') || new OpportunityPortal();
+            const fakeEvent = { target: header, clientX: 0, clientY: 0 };
+            portal.handleClick(fakeEvent);
         }
 
         // URL Data Processing and Template Population
@@ -1546,10 +1565,7 @@
         }
 
         function populateTemplate(data) {
-            // Enhanced Mustache-style template renderer
-            
-            // Store original HTML for processing
-            const originalHTML = document.documentElement.outerHTML;
+            // Safe template renderer that updates only content, not scripts
             
             function renderTemplate(template, context) {
                 // Handle array iterations {{#array}}...{{/array}}
@@ -1594,25 +1610,41 @@
                 }, obj);
             }
             
-            // Process template multiple times to handle nested conditionals
-            let processedHTML = originalHTML;
-            let previousHTML = '';
+            // Update only the body content to avoid script issues
+            const bodyContent = document.body.innerHTML;
+            let processedContent = bodyContent;
+            let previousContent = '';
             let iterations = 0;
             
             // Keep processing until no more changes or max iterations
-            while (processedHTML !== previousHTML && iterations < 10) {
-                previousHTML = processedHTML;
-                processedHTML = renderTemplate(processedHTML, data);
+            while (processedContent !== previousContent && iterations < 10) {
+                previousContent = processedContent;
+                processedContent = renderTemplate(processedContent, data);
                 iterations++;
             }
             
-            // Clean up any remaining unprocessed placeholders
-            processedHTML = processedHTML.replace(/{{[^}]*}}/g, '');
+            // Also update title and meta description
+            if (data.company && data.company.name) {
+                document.title = `${data.company.name} | Make.com Sales Opportunity`;
+            }
             
-            // Update the document
-            document.open();
-            document.write(processedHTML);
-            document.close();
+            const metaDesc = document.querySelector('meta[name="description"]');
+            if (metaDesc && data.company && data.company.description) {
+                metaDesc.content = data.company.description;
+            }
+            
+            // Clean up any remaining unprocessed placeholders
+            processedContent = processedContent.replace(/{{[^}]*}}/g, '');
+            
+            // Update the body content safely
+            document.body.innerHTML = processedContent;
+            
+            // Re-initialize event listeners after content update
+            setTimeout(() => {
+                if (window.portal) {
+                    window.portal.bindEvents();
+                }
+            }, 100);
         }
 
         // Performance-First Initialization
@@ -1626,10 +1658,13 @@
             // Initialize components with progressive enhancement
             if ('customElements' in window) {
                 customElements.define('opportunity-portal', OpportunityPortal);
-                const portal = new OpportunityPortal();
+                window.portal = new OpportunityPortal();
                 if (!document.body.querySelector('opportunity-portal')) {
-                    document.body.appendChild(portal);
+                    document.body.appendChild(window.portal);
                 }
+            } else {
+                // Fallback for older browsers
+                window.portal = new OpportunityPortal();
             }
             
             // Performance feedback - align with "Performance as Experience"
