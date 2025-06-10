@@ -2,6 +2,10 @@
 *-opportunity.json
 opportunity-*.json
 
+# Legacy/duplicate portal files (keep only opportunity-template.html)
+sales-portal.html
+index.html
+
 # OS generated files
 .DS_Store
 .DS_Store?
